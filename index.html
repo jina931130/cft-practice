@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CJ CFT 연습실 심화</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#EDF0F4; --sheet:#FFFFFF; --ink:#1C2230; --muted:#5E6779; --rule:#DCE1E8;
+  --omr:#C8413B; --omr-soft:#FBEDEC; --navy:#233056; --navy-ink:#FFFFFF;
+  --ok:#2F7A55; --warn:#A85A12; --bar:#233056; --bar-bg:#E4E8EF;
+  --font:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#12161E; --sheet:#1A1F29; --ink:#E6E9EF; --muted:#9AA3B5; --rule:#2C3342;
+    --omr:#E2716A; --omr-soft:#2A1F22; --navy:#4A5E9C; --navy-ink:#FFFFFF;
+    --ok:#5DBB8C; --warn:#E0A25E; --bar:#8FA2D8; --bar-bg:#262C39; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#12161E; --sheet:#1A1F29; --ink:#E6E9EF; --muted:#9AA3B5; --rule:#2C3342;
+  --omr:#E2716A; --omr-soft:#2A1F22; --navy:#4A5E9C; --navy-ink:#FFFFFF;
+  --ok:#5DBB8C; --warn:#E0A25E; --bar:#8FA2D8; --bar-bg:#262C39; color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:24px 16px 64px}
+h1,h2,h3{margin:0;line-height:1.3}
+p{margin:0}
+.muted{color:var(--muted)}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px}
+
+/* intro */
+.hero{padding:40px 32px 32px}
+.hero h1{font-size:clamp(28px,5vw,40px);font-weight:700;letter-spacing:-0.02em}
+.hero .lead{margin-top:12px;max-width:34em;color:var(--muted);font-size:17px}
+.omr-strip{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.omr-strip span{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--omr);color:var(--omr);display:grid;place-items:center;font-size:12px;font-weight:600}
+.omr-strip span.fill{animation:fill .35s ease forwards}
+@keyframes fill{to{background:var(--ink);border-color:var(--ink);color:var(--sheet)}}
+@media (prefers-reduced-motion: reduce){.omr-strip span.fill{animation:none;background:var(--ink);border-color:var(--ink);color:var(--sheet)}}
+.block{margin-top:16px;padding:28px 32px}
+.block h2{font-size:20px;font-weight:700;margin-bottom:14px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mode{text-align:left;border:1.5px solid var(--rule);background:var(--sheet);color:var(--ink);border-radius:6px;padding:18px;cursor:pointer}
+.mode[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy)}
+.mode strong{display:block;font-size:17px}
+.mode span{display:block;color:var(--muted);font-size:14px;margin-top:4px}
+.rules p+p{margin-top:10px}
+.rules{color:var(--ink);max-width:40em}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn{appearance:none;border:0;border-radius:6px;padding:13px 22px;font-size:16px;font-weight:600;cursor:pointer;background:var(--navy);color:var(--navy-ink)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--rule)}
+.btn:focus-visible,.mode:focus-visible,.bub:focus-visible{outline:2px solid var(--omr);outline-offset:2px}
+table.hist{width:100%;border-collapse:collapse;font-size:14px}
+.hist-wrap{overflow-x:auto}
+table.hist th,table.hist td{text-align:left;padding:8px 10px;border-top:1px solid var(--rule);white-space:nowrap}
+table.hist th{color:var(--muted);font-weight:500;border-top:0}
+
+/* test bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:1px solid var(--rule)}
+.bar-in{max-width:880px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:16px}
+.bar-part{font-weight:700}
+.bar-sub{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.timer{margin-left:auto;font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.timer.low{color:var(--omr)}
+.quit{background:none;border:0;color:var(--muted);font-size:14px;cursor:pointer;padding:6px 8px;border-radius:4px}
+.quit.armed{color:var(--omr);font-weight:600}
+.prog{height:3px;background:var(--bar-bg)}
+.prog i{display:block;height:100%;background:var(--omr);transition:width .2s}
+
+/* part 1 */
+.page{margin-top:20px;overflow:hidden}
+.scale-head,.q{display:grid;grid-template-columns:44px 1fr 226px;align-items:center;gap:12px;padding:14px 18px}
+.scale-head{padding-top:12px;padding-bottom:10px;background:var(--omr-soft)}
+.scale-head .labels{display:grid;grid-template-columns:repeat(5,1fr);text-align:center;font-size:11px;line-height:1.3;color:var(--omr);font-weight:600}
+.q{border-top:1px solid var(--rule)}
+.q.cur{box-shadow:inset 3px 0 0 var(--omr)}
+.num{color:var(--omr);font-weight:600;font-variant-numeric:tabular-nums;font-size:15px}
+.qtext{font-size:16px}
+.bubs{display:grid;grid-template-columns:repeat(5,1fr);justify-items:center}
+.bub{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--omr);background:transparent;color:var(--omr);font-weight:600;font-size:13px;cursor:pointer;padding:0;transition:background .12s,color .12s}
+.bub[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
+.pagefoot{display:flex;align-items:center;gap:12px;padding:16px 18px;border-top:1px solid var(--rule)}
+.pagefoot .hint{color:var(--muted);font-size:14px;margin-right:auto}
+.kbd{display:inline-block;border:1px solid var(--rule);border-radius:4px;padding:0 6px;font-size:12px;line-height:20px}
+
+/* part 2 */
+.set-head,.opt{display:grid;grid-template-columns:1fr 72px 72px;align-items:center;gap:12px;padding:14px 18px}
+.set-head{background:var(--omr-soft);color:var(--omr);font-size:13px;font-weight:600}
+.set-head span{text-align:center}
+.opt{border-top:1px solid var(--rule)}
+.opt .bubcell{display:flex;justify-content:center}
+
+/* guide */
+.guide{padding:32px}
+.guide h2{font-size:24px}
+.guide .facts{display:flex;gap:28px;margin:20px 0;flex-wrap:wrap}
+.guide .facts div{font-variant-numeric:tabular-nums}
+.guide .facts b{display:block;font-size:28px;font-weight:600}
+.guide .facts span{color:var(--muted);font-size:14px}
+
+/* results */
+.res-head{padding:32px}
+.res-head h1{font-size:30px}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule)}
+.summary div{padding:18px 20px;border-left:1px solid var(--rule)}
+.summary div:first-child{border-left:0}
+.summary b{display:block;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.summary span{color:var(--muted);font-size:13px}
+.good{color:var(--ok)} .caution{color:var(--warn)} .bad{color:var(--omr)}
+.findings p{padding:12px 0;border-top:1px solid var(--rule)}
+.findings p:first-child{border-top:0;padding-top:0}
+.group{margin-top:18px}
+.group:first-of-type{margin-top:0}
+.group h3{font-size:16px}
+.group .gdesc{color:var(--muted);font-size:14px;margin:2px 0 10px}
+.trow{display:grid;grid-template-columns:110px 1fr 40px 46px;gap:12px;align-items:center;padding:6px 0;font-size:15px}
+.track{height:10px;background:var(--bar-bg);border-radius:5px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--bar);border-radius:5px}
+.tscore{font-variant-numeric:tabular-nums;text-align:right}
+.net{font-variant-numeric:tabular-nums;text-align:right;font-size:13px;color:var(--muted)}
+.net.pos{color:var(--ok)} .net.neg{color:var(--omr)}
+.legend{color:var(--muted);font-size:13px;margin-top:12px}
+.pair{padding:14px 0;border-top:1px solid var(--rule)}
+.pair:first-child{border-top:0}
+.pair .pl{display:grid;grid-template-columns:1fr auto;gap:12px;font-size:15px}
+.pair .pl+.pl{margin-top:4px}
+.pair .ans{color:var(--muted);white-space:nowrap}
+.pair .tag{font-size:12px;color:var(--muted)}
+.dist{display:grid;grid-template-columns:90px 1fr 70px;gap:12px;align-items:center;font-size:14px;padding:4px 0}
+.dist .tscore{color:var(--muted)}
+.prio{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.prio ol{margin:8px 0 0;padding-left:20px}
+.note{font-size:13px;color:var(--muted);margin-top:24px;max-width:40em}
+
+@media (max-width:640px){
+  .wrap{padding:16px 10px 48px}
+  .hero,.block,.guide,.res-head{padding:24px 18px}
+  .modes{grid-template-columns:1fr}
+  .scale-head{grid-template-columns:1fr;padding:10px 14px}
+  .scale-head .sp{display:none}
+  .q{grid-template-columns:36px 1fr;padding:14px}
+  .q .bubs{grid-column:1/-1}
+  .set-head,.opt{grid-template-columns:1fr 56px 56px;padding:12px 14px}
+  .summary{grid-template-columns:1fr 1fr}
+  .summary div:nth-child(3){border-left:0}
+  .summary div:nth-child(n+3){border-top:1px solid var(--rule)}
+  .trow{grid-template-columns:88px 1fr 34px 40px;gap:8px;font-size:14px}
+  .prio{grid-template-columns:1fr}
+  .timer{font-size:22px}
+  .bar-in{gap:10px}
+}
+:root{--ok-bg:rgba(47,122,85,.14);--warn-bg:rgba(168,90,18,.14);--omr-bg:rgba(200,65,59,.13)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ok-bg:rgba(93,187,140,.16);--warn-bg:rgba(224,162,94,.16);--omr-bg:rgba(226,113,106,.16)}}
+:root[data-theme="dark"]{--ok-bg:rgba(93,187,140,.16);--warn-bg:rgba(224,162,94,.16);--omr-bg:rgba(226,113,106,.16)}
+/* v2 report */
+.rep-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:8px;align-items:center;padding:28px 28px 20px}
+.hex svg{width:100%;height:auto;display:block;max-width:420px;margin:0 auto}
+.hex .ring{fill:none;stroke:var(--rule);stroke-width:1}
+.hex .spoke{stroke:var(--rule);stroke-width:1}
+.hex .target{fill:none;stroke:var(--omr);stroke-width:1.5;stroke-dasharray:5 4}
+.hex .me{fill:var(--bar);fill-opacity:.2;stroke:var(--bar);stroke-width:2.2;transform-box:view-box;transform-origin:180px 174px;animation:grow .9s cubic-bezier(.2,.8,.2,1)}
+.hex .dot{fill:var(--bar)}
+.hex .lab{font:600 13px var(--font);fill:var(--ink)}
+.hex .val{font:500 12px var(--font);fill:var(--muted)}
+.hex .val.low{fill:var(--omr)}
+@keyframes grow{from{transform:scale(0)}to{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){.hex .me{animation:none}}
+.legend-row{display:flex;gap:16px;justify-content:center;font-size:13px;color:var(--muted);margin-top:6px}
+.legend-row i{display:inline-block;width:18px;height:0;border-top:2px solid var(--bar);vertical-align:middle;margin-right:6px}
+.legend-row i.t{border-top:2px dashed var(--omr)}
+.verdict{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:14px}
+.v-good{background:var(--ok-bg);color:var(--ok)}
+.v-mid{background:var(--warn-bg);color:var(--warn)}
+.v-bad{background:var(--omr-bg);color:var(--omr)}
+.fit-num{font-size:56px;font-weight:700;line-height:1;margin:14px 0 4px;font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.fit-num small{font-size:18px;color:var(--muted);font-weight:500;margin-left:4px}
+.fit-sum{color:var(--muted);font-size:15px;max-width:30em}
+.meters{margin-top:20px;display:grid;gap:12px}
+.meter{display:grid;grid-template-columns:100px 1fr 72px;gap:10px;align-items:center;font-size:14px}
+.meter>span:first-child{white-space:nowrap}
+.meter .mt{position:relative;height:8px;background:var(--bar-bg);border-radius:4px}
+.meter .mt i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.meter .mt b{position:absolute;top:-4px;width:2px;height:16px;background:var(--ink);opacity:.55}
+.meter .mv{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.axis-table{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
+.axis-table div{padding:14px 18px;border-left:1px solid var(--rule);border-top:1px solid var(--rule)}
+.axis-table div:nth-child(3n+1){border-left:0}
+.axis-table div:nth-child(-n+3){border-top:0}
+.axis-table b{font-size:15px}
+.axis-table .sub{display:block;font-size:12px;color:var(--muted)}
+.axis-table .sc{display:block;font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:4px}
+.axis-table .gap{font-size:13px;font-weight:500;margin-left:6px}
+.sec-lead{color:var(--muted);font-size:14px;margin:-6px 0 16px;max-width:40em}
+.imp{display:grid;grid-template-columns:36px 1fr;gap:14px;padding:16px 0;border-top:1px solid var(--rule)}
+.imp:first-of-type{border-top:0;padding-top:4px}
+.imp .rank{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff}
+.sev3 .rank{background:var(--omr)} .sev2 .rank{background:var(--warn)} .sev1 .rank{background:var(--muted)}
+.imp h3{font-size:16px;margin-bottom:4px}
+.imp .data{font-size:13px;color:var(--muted);margin-bottom:8px}
+.imp .row{display:grid;grid-template-columns:52px 1fr;gap:8px;font-size:14px;margin-top:4px}
+.imp .row span:first-child{color:var(--muted);font-weight:600}
+.minor{margin-top:10px;font-size:14px;color:var(--muted)}
+.minor li{margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{padding:6px 10px;border-radius:6px;font-size:13px;font-weight:600;border:1px solid transparent}
+.chip small{font-weight:500;margin-left:6px;opacity:.8}
+.c-good{background:var(--ok-bg);color:var(--ok)}
+.c-mid{background:var(--warn-bg);color:var(--warn)}
+.c-bad{background:var(--omr-bg);color:var(--omr)}
+.c-none{background:var(--bar-bg);color:var(--muted)}
+.pcard{border:1px solid var(--rule);border-radius:6px;padding:14px 16px;margin-top:10px}
+.pcard .st{display:grid;grid-template-columns:1fr auto;gap:10px;font-size:14px;padding:3px 0}
+.pill{font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--bar-bg);white-space:nowrap;align-self:start;line-height:1.6}
+.rev{font-size:11px;color:var(--omr);font-weight:600;margin-left:6px}
+.gapline{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin-top:10px;font-size:12px;color:var(--muted)}
+.gapline svg{width:100%;height:28px}
+.gapline .gl-t{stroke:var(--rule);stroke-width:2}
+.gapline .gl-b{stroke:var(--omr);stroke-width:4;stroke-linecap:round;opacity:.45}
+.gapline .gl-a{fill:var(--bar)} .gapline .gl-c{fill:var(--omr)}
+.gapline .gl-n{font:500 10px var(--font);fill:var(--muted)}
+.gapline .gd{color:var(--omr);font-weight:700;white-space:nowrap}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tcard{border:1px solid var(--rule);border-radius:8px;padding:16px}
+.tcard h3{font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tq{font-size:14px;margin:10px 0 12px}
+.tq b{color:var(--muted);font-weight:600;display:block;font-size:12px;margin-bottom:2px}
+.scale5{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.scale5 span{display:grid;place-items:center;height:30px;border-radius:4px;font-size:12px;font-weight:600;background:var(--bar-bg);color:var(--muted);position:relative}
+.scale5 span.safe{background:var(--ok-bg);color:var(--ok)}
+.scale5 span.amb{background:var(--warn-bg);color:var(--warn)}
+.counts5{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:4px;font-size:11px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.counts5 .hitc{color:var(--omr);font-weight:700}
+.scale-cap{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px}
+.ttip{font-size:13px;margin-top:12px}
+.tex{font-size:13px;color:var(--muted);margin-top:6px}
+.tcard details{margin-top:10px;font-size:13px}
+.tcard summary{cursor:pointer;color:var(--navy);font-weight:600}
+:root[data-theme="dark"] .tcard summary{color:var(--bar)}
+.tcard details li{margin-top:6px}
+.tcard details li em{font-style:normal;color:var(--omr);font-weight:600;margin-left:4px}
+.div-row{display:grid;grid-template-columns:96px 1fr 34px;gap:10px;align-items:center;font-size:14px;padding:3px 0}
+.div-bar{position:relative;height:12px}
+.div-bar::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--rule)}
+.div-bar i{position:absolute;top:0;bottom:0;border-radius:3px}
+.div-bar i.pos{left:50%;background:var(--ok)} .div-bar i.neg{right:50%;background:var(--omr)}
+.div-n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.speed svg{width:100%;height:auto;display:block}
+.speed .sb{fill:var(--bar)} .speed .sb.fast{fill:var(--omr)}
+.speed .tl{stroke:var(--ok);stroke-dasharray:4 3;stroke-width:1.5}
+.speed .ax{font:500 10px var(--font);fill:var(--muted)}
+.stack{display:flex;height:34px;border-radius:6px;overflow:hidden;font-size:12px;font-weight:600}
+.stack span{display:grid;place-items:center;color:#fff;min-width:0;overflow:hidden;white-space:nowrap}
+.stack-leg{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:12px;color:var(--muted)}
+.stack-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+details.more summary{cursor:pointer;font-weight:700;font-size:20px;list-style:none}
+details.more summary::after{content:" +";color:var(--muted)}
+details.more[open] summary::after{content:" −"}
+@media (max-width:720px){
+  .rep-hero{grid-template-columns:1fr;padding:22px 16px}
+  .tgrid{grid-template-columns:1fr}
+  .axis-table{grid-template-columns:repeat(2,1fr)}
+  .axis-table div{border-left:1px solid var(--rule);border-top:1px solid var(--rule)}
+  .axis-table div:nth-child(odd){border-left:0}
+  .axis-table div:nth-child(-n+2){border-top:0}
+  .meter{grid-template-columns:92px 1fr 64px;font-size:13px}
+  .div-row{grid-template-columns:80px 1fr 30px}
+}
+:root{--hl:rgba(255,196,0,.42)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--hl:rgba(255,196,0,.28)}}
+:root[data-theme="dark"]{--hl:rgba(255,196,0,.28)}
+mark.kp{background:linear-gradient(transparent 55%,var(--hl) 55%);color:inherit;font-weight:600;padding:0 1px}
+.gentoggle{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:14px;cursor:pointer}
+.gentoggle input{margin-top:4px;width:18px;height:18px;accent-color:var(--navy)}
+.preplist{margin:20px 0 12px;display:grid;gap:8px}
+.prow2{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--rule);border-radius:6px;font-size:15px}
+.pst{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--bar-bg);color:var(--muted)}
+.pst.done{background:var(--ok-bg);color:var(--ok)} .pst.fail{background:var(--omr-bg);color:var(--omr)} .pst.run{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.4}}
+.sub-h{font-weight:700;font-size:15px;margin:6px 0 12px}
+.sc-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-bottom:6px}
+.sc-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:1px solid var(--rule)}
+.sc-legend i.me{background:var(--ink);border-color:var(--ink)} .sc-legend i.off{background:var(--omr);border-color:var(--omr)} .sc-legend i.z{background:var(--ok-bg);border-color:var(--ok)}
+.pcard{border:1px solid var(--rule);border-radius:8px;padding:16px;margin-top:12px}
+.pcard .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.pcard .pd{font-size:13px;font-weight:700;color:var(--omr);background:var(--omr-bg);padding:3px 10px;border-radius:999px}
+.prow{display:grid;grid-template-columns:52px 1fr;gap:6px 12px;align-items:start}
+.prow .ptag{font-size:12px;font-weight:700;color:var(--muted);padding-top:3px}
+.prow .ptext{font-size:15px;margin:0}
+.prow .sc5{grid-column:2}
+.sc5{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:8px}
+.sc5 span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 2px;border-radius:5px;background:var(--bar-bg);color:var(--muted);border:1.5px solid transparent;min-width:0}
+.sc5 span b{font-size:14px;line-height:1.2}
+.sc5 span small{font-size:10px;line-height:1.2;white-space:nowrap}
+.sc5 span.z{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.sc5 span.me{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.sc5 span.off{background:var(--omr);color:#fff;border-color:var(--omr)}
+.rel{margin:12px 0 12px 64px;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;background:var(--bar-bg);color:var(--ink)}
+.rel.opp{border-left:3px solid var(--warn)} .rel.same{border-left:3px solid var(--bar)}
+.pexp{font-size:14px;margin:12px 0 0;padding-top:12px;border-top:1px dashed var(--rule)}
+.okc{color:var(--ok)} .badc{color:var(--omr)}
+@media (max-width:640px){
+  .prow{grid-template-columns:1fr}.prow .sc5{grid-column:1}.rel{margin-left:0}
+  .sc5 span small{font-size:9px;white-space:normal;text-align:center}
+}
+.hits{display:grid;gap:10px;margin-top:10px}
+.hit2{border-left:3px solid var(--omr);background:var(--omr-bg);border-radius:0 6px 6px 0;padding:10px 12px}
+.hit2.amb{border-left-color:var(--warn);background:var(--warn-bg)}
+.hit2 p{margin:0}
+.hit2 .hs{font-size:14px;font-weight:600;color:var(--ink)}
+.hit2 .ha{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;margin-top:6px}
+.hit2 .mine{font-weight:700;color:var(--omr)} .hit2.amb .mine{color:var(--warn)}
+.hit2 .rec{font-weight:700;color:var(--ok)} .hit2 .arrow{color:var(--muted)}
+.hit2 .vtag{display:inline-block;font-size:11px;font-weight:600;color:var(--muted);margin-left:6px;padding:1px 6px;border-radius:4px;background:var(--bar-bg)}
+.hit2 .hw{font-size:13px;color:var(--ink);margin-top:6px;line-height:1.55}
+.howto{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.howto>div{border:1px solid var(--rule);border-radius:8px;padding:12px}
+.howto p{font-size:13px;margin-top:8px;line-height:1.6}
+.sc-type{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
+.t-pos{background:var(--ok-bg);color:var(--ok)} .t-neg{background:var(--warn-bg);color:var(--warn)} .t-trap{background:var(--omr-bg);color:var(--omr)}
+.pp-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.pp-sum>div{background:var(--bar-bg);border-radius:8px;padding:12px}
+.pp-sum b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.pp-sum span{font-size:12px;color:var(--muted)}
+.sc-card{border:1px solid var(--rule);border-radius:8px;padding:12px 14px;margin-top:10px}
+.sc-card.bad{border-left:4px solid var(--omr)} .sc-card.mid{border-left:4px solid var(--warn)}
+.sc-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px}
+.sc-row{display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:center;padding:5px 0;font-size:14px}
+.pick{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700}
+.pick.m{background:var(--navy);color:#fff} .pick.l{background:var(--omr);color:#fff} .pick.e{border:1.5px dashed var(--rule)}
+.itag{font-size:11px;font-weight:700;margin-left:6px;padding:1px 6px;border-radius:4px}
+.itag.trap{background:var(--omr-bg);color:var(--omr)} .itag.hon{background:var(--warn-bg);color:var(--warn)}
+.sc-note{font-size:13px;margin:8px 0 0;padding-top:8px;border-top:1px dashed var(--rule);line-height:1.6}
+.mism{margin:0;padding-left:18px;font-size:14px} .mism li{margin-top:6px}
+.pp-list{display:grid;gap:4px}
+.pp-row{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;font-size:14px;padding:3px 0}
+.pp-dots{display:flex;gap:3px;flex-wrap:wrap}
+.pp-dots i{width:10px;height:10px;border-radius:50%}
+.pp-dots i.m{background:var(--navy)} .pp-dots i.l{background:var(--omr)}
+:root[data-theme="dark"] .pp-dots i.m,:root[data-theme="dark"] .pick.m{background:var(--bar)}
+.all-sets summary{cursor:pointer;font-weight:600;margin-top:18px;color:var(--muted)}
+@media (max-width:720px){.howto,.pp-sum{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const SCALE=['매우 아니다','아니다','보통이다','그렇다','매우 그렇다'];
+const TR={
+  EXE:['실행력','O'],CHG:['도전·변화','O'],CRE:['창의','O'],LEA:['주도성','O'],
+  CON:['성실·책임','T'],PLN:['계획·분석','T'],GRO:['학습·성장','T'],EMO:['정서 안정','T'],
+  COL:['협업·존중','S'],CUS:['고객 공감','S'],HON:['정직·원칙','S'],COM:['소통','S'],GLO:['개방성','S']
+};
+const GROUPS=[
+  {k:'O',n:'ONLYONE',d:'최초, 최고, 차별화를 향해 먼저 움직이는 힘'},
+  {k:'T',n:'인재',d:'맡은 일을 끝까지 해내고 스스로 성장하는 힘'},
+  {k:'S',n:'상생',d:'동료, 고객, 다른 생각과 함께 가는 힘'}
+];
+/* ---------- 문항 풀 v3: 구체적인 행동·상황 중심 ---------- */
+// "#쌍ID " = 같은 성향을 다른 상황으로 묻는 짝, "~" = 반대 방향
+const BANK={
+EXE:["#E1 할 일이 생기면 메모해 두기보다 [[바로 처리하는]] 편이다.","#E1 메시지나 메일은 [[확인하는 즉시 답하는]] 편이다.","#E2 ~마음먹은 운동이나 공부를 [[실제로 시작하기까지 오래 걸린다]].","#E2 새해 계획은 [[1월이 가기 전에 이미 시작해 둔다]].","#E3 회의가 끝나면 내가 맡은 일부터 [[바로 손댄다]].","#E3 ~회의에서 정한 일을 [[며칠 묵혀 둘 때가 많다]].","~여행 계획을 세우다가 지쳐서 정작 출발을 미룬 적이 있다.","마감이 없는 일도 스스로 기한을 정해서 끝낸다.","~해야 할 일 앞에서 책상 정리부터 하게 된다.","막힌 문제는 혼자 붙잡기보다 바로 물어봐서 푼다.","같은 시간이면 완벽한 하나보다 괜찮은 셋을 만드는 쪽을 택한다.","주말 계획이 틀어지면 바로 다른 계획을 세운다.","~생각이 많아서 행동이 늦다는 말을 듣는다.","결과물을 일찍 보여 주고 피드백을 받는 편이다."],
+CHG:["#C1 가 본 적 없는 동네 식당에 [[혼자 들어가는 것이 어렵지 않다]].","#C1 ~여행지에서도 [[늘 먹던 메뉴를 고르는]] 편이다.","#C2 익숙한 업무보다 [[처음 해 보는 업무를 맡을 때 의욕이 난다]].","#C2 ~새 업무를 맡으면 [[잘 해낼 수 있을지 걱정부터 앞선다]].","#C3 ~쓰던 앱의 화면이 바뀌면 [[한동안 불편해서 짜증이 난다]].","#C3 새로운 서비스나 기기가 나오면 [[먼저 써 보는]] 편이다.","실패할 확률이 높아도 배울 게 많은 프로젝트를 고르겠다.","~이사나 이직처럼 큰 변화는 최대한 미루고 싶다.","남들이 해 보지 않은 방식을 시도할 때 재미를 느낀다.","~확실하지 않은 일에는 손을 대지 않는 편이다.","조직 개편이나 팀 이동이 있으면 기대가 먼저 된다.","~규칙이 자주 바뀌는 곳에서는 일하기 어렵다.","지금 하는 일과 전혀 다른 분야를 배워 보고 싶을 때가 많다.","목표를 세울 때는 지금 실력보다 조금 높게 잡는다."],
+CRE:["#R1 같은 길로 다니기보다 [[가끔 일부러 다른 길로 가 본다]].","#R1 ~일을 할 때는 [[검증된 방식을 그대로 따르는 것이 편하다]].","#R2 [[전혀 상관없어 보이는 두 가지를 엮어]] 아이디어를 낸 적이 많다.","#R2 다른 분야 사례를 보다가 [[내 일에 쓸 방법을 떠올리곤 한다]].","#R3 ~회의에서 아이디어를 내라고 하면 [[머릿속이 하얘진다]].","#R3 브레인스토밍 시간에 [[아이디어를 여러 개 내는]] 편이다.","불편한 물건을 보면 어떻게 바꾸면 좋을지 상상해 본다.","~정답이 정해져 있는 문제가 마음이 편하다.","떠오른 아이디어를 메모 앱에 따로 모아 둔다.","설명서보다 직접 이것저것 눌러 보며 익힌다.","~광고나 포스터를 봐도 별다른 생각이 들지 않는다.","남들이 당연하게 여기는 규칙에 왜 그런지 묻곤 한다.","생각을 그림이나 도식으로 정리하는 것을 좋아한다.","~새로운 아이디어를 내기보다 있는 것을 다듬는 일이 더 맞는다."],
+LEA:["#D1 조별 과제에서 [[역할을 나누는 일을 주로 맡았다]].","#D1 여러 사람이 모이면 [[자연스럽게 내가 일정을 정리하게 된다]].","#D2 ~책임자를 정해야 할 때 [[먼저 손을 들지는 않는다]].","#D2 맡을 사람이 없으면 [[내가 나서서 맡는다]].","#D3 의견이 갈리면 [[기준을 세워서 결론을 내자고 제안한다]].","#D3 ~의견이 갈리면 [[결론이 날 때까지 지켜보는]] 편이다.","팀원이 처져 있으면 분위기를 끌어올릴 방법을 찾는다.","~발표처럼 앞에 서는 역할은 다른 사람에게 넘기는 편이다.","새로운 프로젝트를 먼저 제안해 본 적이 있다.","~윗사람이 방향을 정해 주는 것이 편하다.","결과가 좋지 않아도 내가 내린 결정이면 책임을 피하지 않는다.","다른 사람을 설득해서 생각을 바꾸게 한 경험이 많다.","~주어진 역할 이상은 신경 쓰지 않는다.","동아리나 모임에서 운영진을 맡아 본 적이 있다."],
+CON:["#S1 약속 장소에는 [[보통 10분 먼저 도착한다]].","#S1 ~약속 시간에 [[아슬아슬하게 도착하는 일이 잦다]].","#S2 맡은 일이 끝나도 [[한 번 더 확인하고 제출한다]].","#S2 ~제출하고 나서 [[오타나 실수를 발견하는 일이 많다]].","#S3 손해를 보더라도 [[한 번 한 약속은 지킨다]].","#S3 ~상황이 바뀌면 [[약속을 미루는 것도 괜찮다]]고 생각한다.","매일 비슷한 시간에 일어나는 생활 습관이 있다.","~재미없는 일은 끝까지 하기 어렵다.","빌린 물건은 받은 상태 그대로 돌려준다.","~일정표나 가계부를 쓰다 말다 하는 편이다.","아무도 확인하지 않는 일도 대충 하지 않는다.","누가 묻기 전에 맡은 일의 진행 상황을 먼저 공유한다.","~마감에 쫓겨 밤을 새운 적이 많다.","한번 시작한 강의나 책은 끝까지 마치는 편이다."],
+PLN:["#P1 여행 전에 [[동선과 예산을 미리 정리한다]].","#P1 ~큰 일을 앞두고도 [[계획 없이 그때그때 처리하는]] 편이다.","#P2 결정하기 전에 [[장단점을 표로 정리해 본다]].","#P2 물건을 살 때 [[리뷰와 가격을 여러 곳에서 비교한다]].","#P3 ~[[숫자나 표가 많은 자료는 읽기 싫어진다]].","#P3 [[숫자로 정리된 자료를 보면]] 상황이 더 잘 이해된다.","문제가 생기면 원인을 몇 단계로 나눠서 따져 본다.","~할 일 목록을 만들어도 잘 보지 않는다.","일정이 몰릴 것 같으면 미리 순서를 바꿔 둔다.","'아마', '대충'보다 정확한 숫자로 말하려고 한다.","~감으로 결정하고 이유는 나중에 붙이는 편이다.","보고서를 쓸 때 목차부터 잡고 시작한다.","관심 있는 기업의 실적 발표나 업계 동향 자료를 찾아 읽는다.","~받은 파일을 바탕화면에 그대로 쌓아 두는 편이다."],
+GRO:["#G1 업무와 관련된 [[책이나 강의를 따로 챙겨 본다]].","#G1 퇴근 후나 주말에 [[배우고 있는 것이 하나 이상 있다]].","#G2 피드백을 받으면 [[메모해 두고 다음 작업에 반영한다]].","#G2 ~[[같은 지적을 두 번 이상 받은 적이 많다]].","#G3 ~[[지금 하는 일만 잘하면 충분하다]]고 생각한다.","#G3 1년 뒤의 내 모습을 그리며 [[따로 준비하는 것이 있다]].","모르는 단어나 개념이 나오면 바로 찾아본다.","잘하는 사람의 작업물을 따라 만들어 보며 배운다.","~새로운 프로그램을 익히는 데 시간이 많이 걸린다.","일이 끝나면 잘된 점과 아쉬운 점을 따로 적어 둔다.","~어려운 내용은 필요할 때 배우면 된다고 생각한다.","세미나나 강연에 일부러 찾아가 본 적이 있다.","자격증이나 시험처럼 목표를 정해 꾸준히 공부한 경험이 있다.","~지적을 들으면 의욕이 크게 꺾인다."],
+EMO:["#M1 발표 직전에도 [[크게 떨리지 않는다]].","#M1 ~중요한 자리를 앞두면 [[잠을 설친다]].","#M2 싫은 소리를 들어도 [[하루가 지나면 대부분 잊는다]].","#M2 ~누군가에게 싫은 소리를 들으면 [[며칠 동안 머릿속을 맴돈다]].","#M3 일이 꼬여도 [[일단 할 수 있는 것부터 한다]].","#M3 ~일이 계획대로 안 되면 [[손에 잡히지 않는다]].","~기분이 자주 오르내린다는 말을 듣는다.","힘든 날에도 다음 날이면 기분이 회복된다.","~작은 실수 하나에 하루 종일 마음이 쓰인다.","스트레스를 받으면 푸는 나만의 방법이 있다.","~기다리는 연락이 안 오면 다른 일에 집중하기 어렵다.","급한 일이 한꺼번에 몰려도 순서를 정하면 차분해진다.","~남들이 나를 어떻게 볼지 신경이 많이 쓰인다.","예상치 못한 질문을 받아도 침착하게 답하는 편이다."],
+COL:["#L1 팀 과제에서 내 몫이 끝나도 [[다른 사람 일을 도와준다]].","#L1 ~[[내 몫만 확실히 하면]] 나머지는 각자 책임이라고 생각한다.","#L2 나와 의견이 다른 사람에게 [[이유부터 물어본다]].","#L2 ~회의에서 반대 의견이 나오면 [[기분이 상한다]].","#L3 후배나 신입의 아이디어도 좋으면 [[그대로 받아들인다]].","#L3 ~경력이 짧은 사람의 의견은 [[한 번 더 의심하게 된다]].","함께 만든 결과물을 발표할 때 팀원 이름을 꼭 언급한다.","~혼자 하면 더 빨리 끝날 일을 나눠서 하는 게 답답하다.","동료가 실수하면 탓하기보다 같이 수습한다.","다른 부서 사람과도 편하게 협업하는 편이다.","~내 방식대로 해야 마음이 놓인다.","팀원마다 일하는 속도가 다르다는 걸 감안해서 일정을 잡는다.","갈등이 생기면 양쪽 이야기를 다 들어 보는 편이다.","~동료의 피드백에 방어적으로 반응할 때가 있다."],
+CUS:["#U1 카페나 가게에 가면 [[손님이 불편해할 만한 점이 먼저 눈에 띈다]].","#U1 앱을 쓰다가 불편한 점이 있으면 [[왜 그런지 따져 보게 된다]].","#U2 친구가 고민을 말하면 [[해결책보다 이야기를 먼저 들어 준다]].","#U2 ~상대의 표정이 바뀌어도 [[잘 눈치채지 못한다]].","#U3 불만 글을 보면 [[무엇을 고치면 될지 생각한다]].","#U3 ~불만을 말하는 사람은 [[대체로 까다로운 사람]]이라고 생각한다.","선물을 고를 때 받는 사람의 생활을 먼저 떠올린다.","상품 리뷰에서 별점보다 구체적인 불만 내용을 먼저 읽는다.","~내가 쓰기 편하면 다른 사람도 편할 거라고 생각한다.","부모님이 새 기기를 쓰는 걸 보면 어디서 막히는지 보인다.","~사람들이 무엇을 좋아하는지는 크게 궁금하지 않다.","줄이 길게 늘어선 곳을 보면 어떻게 줄일 수 있을지 생각한다.","같은 물건도 쓰는 사람에 따라 다르게 느낄 수 있다고 생각한다.","~같은 설명을 여러 번 해야 하는 사람을 보면 답답하다."],
+HON:["#H1 거스름돈을 더 받은 걸 알면 [[돌아가서 돌려준다]].","#H1 ~[[내게 유리한 실수는 굳이 바로잡지 않아도]] 된다고 생각한다.","#H2 실수를 하면 [[누가 알아채기 전에 먼저 말한다]].","#H2 ~작은 실수는 [[조용히 고치고 넘어가는]] 편이다.","#H3 잘 모르는 내용은 [[모른다고 말한다]].","#H3 ~모르는 내용이 나와도 [[아는 척 넘어갈 때가 있다]].","보는 사람이 없어도 줄을 서고 신호를 지킨다.","~결과가 좋으면 과정의 작은 편법은 넘어갈 수 있다.","불리한 내용도 숨기지 않고 보고한다.","~분위기가 좋을 땐 내 생각과 다른 말에도 맞장구친다.","동료의 부정행위를 알게 되면 모른 척하지 않는다.","~성과를 말할 때 조금 부풀려 표현하는 편이다.","회사 비품이나 공용 물건은 사적으로 쓰지 않는다.","윗사람의 지시가 잘못됐다고 생각하면 이유를 들어 말한다."],
+COM:["#O1 처음 보는 사람에게 [[먼저 말을 거는]] 편이다.","#O1 ~새로운 모임에 가면 [[누가 말을 걸어 줄 때까지 기다린다]].","#O2 복잡한 내용을 [[예를 들어 쉽게 설명하는]] 편이다.","#O2 ~내가 설명하면 [[다시 묻는 사람이 많다]].","#O3 불편한 이야기도 [[미루지 않고 그날 꺼낸다]].","#O3 ~하고 싶은 말이 있어도 [[분위기를 보다가 넘어갈 때가 많다]].","결론부터 말하고 이유를 덧붙이는 편이다.","메신저로 길게 주고받기보다 직접 이야기하는 게 빠르다고 생각한다.","~사람이 많은 자리에 다녀오면 혼자 쉬는 시간이 꼭 필요하다.","상대에 따라 말투와 설명 수준을 바꾼다.","~회의 시간에 거의 말하지 않고 끝날 때가 있다.","글로 생각을 정리해서 공유하는 것이 편하다.","대화 중에 상대가 이해했는지 중간중간 확인한다.","~가벼운 대화를 길게 이어 가는 게 어렵다."],
+GLO:["#B1 [[나와 생각이 전혀 다른 사람과]] 이야기하는 것이 흥미롭다.","#B1 ~[[나와 가치관이 다른 사람과는]] 깊이 대화하고 싶지 않다.","#B2 세대가 다른 사람의 의견에서도 [[배울 점을 찾는다]].","#B2 ~윗세대나 아랫세대의 생각은 [[이해하기 어렵다고 느낀다]].","#B3 내 생각이 틀렸다는 근거를 보면 [[쉽게 생각을 바꾼다]].","#B3 ~한번 굳어진 생각은 [[잘 바뀌지 않는다]].","낯선 분야의 책도 가리지 않고 읽는다.","~익숙한 사람들과만 어울리는 편이다.","처음 보는 음식이나 문화도 거리낌 없이 시도한다.","~관심 없는 주제의 이야기는 끝까지 듣기 어렵다.","다른 사람의 취향을 있는 그대로 존중하는 편이다.","~유행하는 것들은 대부분 의미 없다고 생각한다.","다양한 배경의 사람이 모인 팀이 더 좋은 결과를 낸다고 믿는다.","~나와 다른 방식으로 일하는 사람을 보면 답답하다."]
+};
+// 관심·생활 습관 문항 (성향 점수에 반영)
+const INT=[["PLN","경제 뉴스나 증시 소식을 주기적으로 확인한다."],["GRO","관심 분야 뉴스레터를 몇 개 구독하고 있다."],["CHG","새로 나온 제품을 남들보다 먼저 써 보는 편이다."],["CRE","전시회나 팝업스토어를 일부러 찾아간다."],["CHG","중고 거래나 공동 구매 같은 새로운 방식을 먼저 써 본다."],["LEA","단체 대화방에서 일정이나 공지를 정리해 올리는 편이다."],["CON","운동이나 공부를 기록으로 남기면서 하는 편이다."],["CRE","직접 무언가를 만드는 취미가 있다."],["CUS","사람들의 소비 습관이나 유행 변화에 관심이 많다."],["GRO","다큐멘터리나 시사 프로그램을 즐겨 본다."],["PLN","가전제품을 살 때 사양표를 꼼꼼히 비교한다."],["GRO","온라인 강의를 결제하면 끝까지 듣는 편이다."],["CHG","해마다 새로운 취미를 하나씩 시작해 본다."],["COL","봉사활동이나 동호회처럼 여럿이 하는 활동을 해 왔다."],["CHG","여행 중에도 계획에 없던 곳에 바로 가 보는 편이다."],["CUS","매장 직원이 손님을 응대하는 방식을 유심히 본다."],["CRE","마음에 드는 디자인을 보면 사진으로 저장해 둔다."],["LEA","학교나 회사에서 행사를 기획해 본 적이 있다."],["PLN","스프레드시트로 정리하는 일을 좋아한다."],["COM","블로그나 SNS에 내 생각을 글로 쓰는 편이다."],["GRO","새로운 AI 도구가 나오면 내 일에 써 볼 방법을 찾는다."],["GLO","여행을 가면 유명한 곳보다 덜 알려진 곳을 찾아간다."],["EMO","혼자만의 시간을 보내는 방법이 확실히 있다."],["CON","지출 내역을 꾸준히 기록한다."]];
+// 일에 대한 가치관 (성향 점수에 반영, 1 = 반대 방향)
+const WVL=[["GRO",0,"야근이 있더라도 많이 배울 수 있는 회사가 좋다."],["CON",1,"정해진 업무 범위 밖의 일은 되도록 맡고 싶지 않다."],["CHG",0,"안정적인 자리보다 성장하는 조직에서 일하고 싶다."],["COL",0,"개인 성과보다 팀 성과로 평가받는 게 좋다."],["EXE",0,"빠르게 시도하고 고쳐 나가는 방식이 잘 맞는다."],["HON",0,"성과가 조금 낮아도 공정하게 평가받는 곳이 좋다."],["LEA",0,"언젠가 팀을 이끄는 자리에 가고 싶다."],["CUS",0,"내가 만든 결과물을 쓰는 사람의 반응을 직접 듣고 싶다."],["GLO",0,"여러 부서를 돌며 다양한 일을 경험해 보고 싶다."],["PLN",0,"업무 목표가 숫자로 분명한 것이 좋다."],["CRE",0,"정해진 매뉴얼보다 내가 방법을 정할 수 있는 일이 좋다."],["EMO",1,"업무 강도가 높으면 금방 지친다."],["COM",0,"여러 부서와 소통하는 역할이 잘 맞는다."],["CHG",1,"한 회사에서 같은 업무를 오래 하는 것이 편하다."],["GRO",1,"회사에서 시키는 교육만 들어도 충분하다."],["COL",0,"동료와 밥을 먹으며 일 이야기를 나누는 시간이 좋다."],["CON",0,"맡은 일은 퇴근 전에 정리해 두고 간다."],["CUS",0,"고객이 직접 체감하는 서비스를 만드는 일에 끌린다."],["EXE",0,"결과가 빨리 보이는 일이 더 재미있다."],["HON",1,"규정이 많은 회사는 답답하게 느껴진다."]];
+
+const IND=[
+["EXE",1,"주변에서 나를 일 처리가 빠른 사람이라고 한다."],["EXE",-1,"주변에서 내 일이 언제 끝나는지 자주 묻는다."],
+["CHG",1,"새로운 일이 생기면 동료들이 나부터 떠올린다."],["CHG",-1,"주변 사람들은 나를 변화를 반기지 않는 사람으로 본다."],
+["CRE",1,"동료들은 아이디어가 막히면 나를 찾는다."],["CRE",-1,"내 아이디어는 무난하다는 평을 자주 듣는다."],
+["LEA",1,"사람들은 내가 앞에서 정리해 주기를 기대한다."],["LEA",-1,"팀에서 나는 주로 시키는 일을 맡는 사람으로 통한다."],
+["CON",1,"동료들은 내게 맡긴 일은 따로 확인하지 않는다."],["CON",-1,"주변에서 내 일이 잘되고 있는지 걱정스럽게 묻는 경우가 많다."],
+["PLN",1,"동료들은 일정 관리를 나에게 맡기면 안심한다."],["PLN",-1,"주변에서 나를 즉흥적인 사람이라고 한다."],
+["GRO",1,"주변에서 나를 늘 뭔가 배우고 있는 사람이라고 한다."],["GRO",-1,"주변에서 나를 하던 대로만 하는 사람으로 본다."],
+["EMO",1,"급한 상황에서 사람들이 나를 보면 안심한다."],["EMO",-1,"주변에서 내가 예민하다는 말을 자주 한다."],
+["COL",1,"팀원들은 고민이 생기면 나에게 털어놓는다."],["COL",-1,"동료들은 나와 일하면 손발 맞추기가 어렵다고 한다."],
+["CUS",1,"사람들은 내가 상대의 입장을 잘 헤아린다고 한다."],["CUS",-1,"내 결과물은 쓰기 어렵다는 말을 종종 듣는다."],
+["HON",1,"주변 사람들은 내 말을 그대로 믿는 편이다."],["HON",-1,"주변에서 내 말을 한 번 더 확인하려 할 때가 많다."],
+["COM",1,"내 설명은 이해하기 쉽다는 말을 자주 듣는다."],["COM",-1,"회의가 끝나면 내 말을 다시 물어보는 사람이 많다."],
+["GLO",1,"주변에서 나를 생각이 열려 있는 사람이라고 한다."],["GLO",-1,"주변에서 나를 고집이 센 사람이라고 한다."]
+];
+const ABS=["살면서 남을 미워해 본 적이 한 번도 없다.","약속에 늦어 본 적이 단 한 번도 없다.","어떤 비판을 들어도 전혀 서운하지 않다.","내가 내린 결정을 후회해 본 적이 없다.","누구와도 금방 친해질 수 있다.","처음 하는 일도 언제나 잘 해낸다.","남의 물건을 허락 없이 써 본 적이 없다.","화가 나도 언제나 차분하게 말한다.","피곤해서 일을 대충 한 적이 한 번도 없다.","모든 사람에게 항상 친절하다.","거짓말을 해 본 적이 한 번도 없다.","나는 단점이 거의 없다.","맡은 일을 실수 없이 끝내지 못한 적이 없다.","질투를 느껴 본 적이 전혀 없다.","어떤 상황에서도 불안해지지 않는다.","남의 험담에 끼어 본 적이 없다.","하기 싫은 일을 미뤄 본 적이 없다.","규칙을 어겨 본 적이 단 한 번도 없다.","나는 언제나 최선을 다한다.","아무리 바빠도 연락에는 바로 답한다.","팀에서 갈등을 겪어 본 적이 없다.","내 판단은 대부분 옳았다.","시험이나 평가에서 요령을 피워 본 적이 없다.","한 번 들은 내용은 절대 잊지 않는다."];
+const HUM=["다른 사람의 실수담을 듣고 웃음이 날 때가 있다.","가끔은 아무것도 하기 싫은 날이 있다.","칭찬을 받으면 은근히 기분이 좋다.","내 의견이 무시되면 서운하다.","바쁠 때 연락을 미뤄 둔 적이 있다.","유난히 잘 맞지 않는 사람이 있다.","하기 싫은 일을 억지로 한 적이 있다.","내가 틀렸다는 걸 인정하기 싫었던 적이 있다.","사소한 거짓말로 상황을 넘긴 적이 있다.","피곤한 날에는 집중력이 떨어진다.","일이 틀어지면 남 탓을 하고 싶어질 때가 있다.","잘나가는 친구를 보면 조금 부러울 때가 있다.","화가 나서 문을 세게 닫아 본 적이 있다.","마감 직전에 몰아서 해 본 적이 있다.","내키지 않는 모임에 핑계를 대고 빠진 적이 있다.","기분이 안 좋은 날엔 말수가 줄어든다.","귀찮아서 답장을 늦게 한 적이 있다.","남의 이야기를 흘려들은 적이 있다.","다른 사람이 나보다 먼저 인정받으면 신경이 쓰인다.","계획했던 운동을 빼먹은 적이 있다.","내 노력을 더 알아줬으면 좋겠다고 생각할 때가 있다.","사람 많은 곳에 다녀오면 피곤하다.","거절하기 미안해서 원치 않는 부탁을 들어준 적이 있다.","실수를 바로 말하기 망설여진 적이 있다."];
+// 적응 척도: 피해의식, 충동, 공격성, 불안 등
+const MAL=["사람들이 뒤에서 내 이야기를 한다고 느낄 때가 많다.","다른 사람의 호의에도 숨은 의도가 있다고 생각하게 된다.","화가 나면 참지 못하고 바로 말해 버린다.","사고 싶은 게 생기면 계획에 없어도 바로 산다.","이유 없이 기분이 가라앉는 날이 잦다.","남들보다 억울한 일을 많이 당한다고 생각한다.","규칙은 걸리지만 않으면 어겨도 된다고 생각한다.","일이 잘못되면 대부분 다른 사람 때문이라고 느낀다.","사소한 일에도 쉽게 짜증이 난다.","다른 사람이 잘되면 내가 손해 보는 기분이 든다.","한번 서운했던 일은 오래 기억해 둔다.","위험한 상황에서 짜릿함을 느낀다.","나를 무시한 사람에게는 똑같이 갚아 준다.","걱정 때문에 일을 시작하지 못할 때가 많다.","사람들이 나를 제대로 이해하지 못한다고 느낀다.","마음에 안 드는 지시는 일부러 늦게 처리한 적이 있다.","기분에 따라 일하는 속도가 크게 달라진다.","사람들 앞에서 망신당할까 봐 자주 걱정된다.","내가 손해 본다고 느끼면 협조하고 싶지 않다.","큰소리로 따지면 결국 원하는 걸 얻을 수 있다."];
+const VAL=[["업무 속도를 위해 결재 절차를 일부 건너뛰는 것도 융통성이다.", "정직", "절차를 건너뛰는 걸 '융통성'으로 포장한 문장이에요. 정직은 정해진 절차를 지키는 데서 시작해요."], ["보고서 숫자는 조금 보기 좋게 반올림해도 문제없다.", "정직", "작은 숫자라도 보기 좋게 바꾸는 건 보고를 왜곡하는 거예요. 정직 문항의 가장 기본적인 함정이에요."], ["동료의 실수를 상사에게 알리는 것은 고자질에 가깝다.", "정직", "실수를 드러내는 걸 '고자질'로 보는 생각에 동의하는지 묻는 문장이에요. 동의하면 문제를 덮는 쪽으로 읽혀요."], ["업무 시간에 개인 용무를 잠깐 보는 정도는 괜찮다.", "정직", "작은 일이라도 근무 원칙을 느슨하게 보는 태도로 읽혀요."], ["거래처에서 받은 작은 선물은 개인적으로 가져도 된다.", "정직", "윤리 경영과 바로 연결되는 문장이라 회사가 가장 민감하게 봐요. 매우 아니다가 안전해요."], ["다른 팀 자료를 출처 없이 써도 결과가 좋으면 괜찮다.", "정직", "남의 결과물을 내 것처럼 쓰는 건 결과가 좋아도 정직 문제예요."], ["문제가 생겨도 일정에 영향이 없으면 굳이 보고하지 않아도 된다.", "정직", "문제를 숨기는 것을 효율로 포장한 문장이에요."], ["상사가 원하는 방향으로 데이터를 해석해 주는 것도 능력이다.", "정직", "윗사람 입맛에 맞게 데이터를 해석하는 건 능력이 아니라 왜곡이에요."], ["경비 처리는 조금 넉넉하게 하는 것이 관행이다.", "정직", "'관행'이라는 말로 부정을 정당화하는 문장이에요."], ["고객이 묻지 않은 단점까지 설명할 필요는 없다.", "정직", "고객에게 불리한 정보를 감추는 쪽이라 정직과 고객 신뢰 둘 다에 걸려요."], ["결국 직급이 높은 사람의 의견이 옳은 경우가 많다.", "존중", "의견의 가치를 직급으로 판단하는 생각이에요. 존중은 연차나 직급과 상관없이 의견을 대하는 태도예요."], ["신입 사원은 일단 시키는 일부터 하는 게 맞다.", "존중", "현실적으로 들리지만 신입을 의견 없는 실행자로 보는 문장이에요. 강하게 동의하면 수직적인 사람으로 읽혀요. 보통이다까지는 무난해요."], ["일을 못하는 동료와는 거리를 두는 것이 현명하다.", "존중", "동료를 성과로만 평가하고 배제하는 태도라 존중과 부딪혀요."], ["회의에서는 결정권자의 의견에 먼저 맞추는 것이 효율적이다.", "존중", "효율을 앞세웠지만 결국 힘 있는 사람에게 맞추는 태도예요."], ["아랫사람에게는 조금 강하게 말해야 일이 된다.", "존중", "위계로 일을 밀어붙이는 태도라 존중과 부딪혀요."], ["조직에서 살아남으려면 누구와 친해야 하는지 알아야 한다.", "존중", "일보다 관계의 힘을 기준으로 움직이는 정치적인 태도로 읽혀요."], ["나이가 어린 상사에게 지시받는 것은 불편하다.", "존중", "나이를 기준으로 상대를 대하는 태도라 존중 문항에서 걸려요."], ["거래에서는 상대가 손해를 보더라도 우리 이익을 최대한 챙겨야 한다.", "상생", "상대를 이겨야 할 대상으로만 보는 생각이라 함께 성장하는 상생과 반대예요."], ["우리 팀 실적이 우선이니 다른 팀 요청은 뒤로 미뤄도 된다.", "상생", "부서 이기주의로 읽혀요. 상생은 조직 안의 협력도 포함해요."], ["경쟁사를 깎아내리는 홍보도 효과가 있다면 해 볼 만하다.", "상생", "효과를 이유로 공정하지 않은 방법을 허용하는 생각이에요."], ["고객 불만은 목소리가 큰 고객부터 처리하는 것이 효율적이다.", "상생", "고객을 공정하게 대하지 않는 태도라 고객 신뢰와 상생에 걸려요."], ["지역 사회나 환경 문제는 회사가 신경 쓸 일이 아니다.", "상생", "기업의 사회적 책임과 공유가치를 강조하는 CJ 가치와 정면으로 부딪혀요."], ["내 성과가 드러나지 않는 협업에는 힘을 덜 쓰게 된다.", "상생", "공이 보이는 일만 하겠다는 뜻이라 협력과 상생에서 걸려요."], ["업계 평균만 해도 충분히 잘하고 있는 것이다.", "ONLYONE", "최고를 지향하는 ONLYONE과 반대되는 현상 유지 태도예요. 보통이다까지는 무난해요."], ["이미 성공한 방식을 따라 하는 것이 가장 안전한 전략이다.", "ONLYONE", "안전해 보이지만 남이 한 걸 따라가는 전략이라 최초·차별화와 부딪혀요. 보통이다까지는 무난해요."], ["실패할 수도 있는 기획은 처음부터 제안하지 않는 게 낫다.", "ONLYONE", "실패를 피하려고 처음부터 도전하지 않는 태도예요."], ["1등이 어렵다면 무리해서 경쟁할 필요는 없다.", "ONLYONE", "ONLYONE의 '최고' 지향과 정반대인 생각이에요."], ["새로운 시도는 윗선에서 지시가 내려올 때 하면 된다.", "ONLYONE", "스스로 먼저 움직이지 않는 수동적인 태도로 읽혀요."], ["지금 잘 팔리는 상품이라면 굳이 바꿀 이유가 없다.", "ONLYONE", "현재에 안주하는 생각이라 차별화와 부딪혀요. 보통이다까지는 무난해요."], ["남들이 하지 않는 일에는 다 이유가 있다.", "ONLYONE", "새로운 시도를 처음부터 의심하는 태도예요. '최초'를 강조하는 ONLYONE과 맞지 않아요. 보통이다까지는 무난해요."], ["목표는 확실히 달성할 수 있는 수준으로 잡는 게 좋다.", "ONLYONE", "안정적으로 들리지만 높은 목표에 도전하지 않겠다는 뜻이에요. 매우 그렇다는 특히 불리해요. 보통이다까지는 무난해요."], ["정해진 업무만 잘해도 회사에 충분히 기여하는 것이다.", "ONLYONE", "주어진 일 이상은 하지 않겠다는 태도라 ONLYONE, 주인의식과 부딪혀요."]];
+const TWO=[["실수해도 크게 신경 쓰지 않는 편이다.","정서 안정","책임감 부족"],["한번 정한 방식은 웬만해선 바꾸지 않는다.","일관성","변화 거부"],["남의 평가보다 내 기준이 더 중요하다.","주관","피드백 거부"],["일이 많아도 남에게 넘기지 않고 혼자 해결한다.","책임감","협업 부족"],["상사의 지시라면 이유를 묻지 않고 따른다.","성실","원칙 없음"],["분위기를 깨지 않으려고 반대 의견을 삼킨다.","배려","정직 부족"],["완벽해질 때까지 결과물을 공개하지 않는다.","꼼꼼함","실행력 부족"],["결정이 빨라서 다른 사람 의견을 길게 듣지 않는다.","실행력","존중 부족"],["감정을 거의 드러내지 않는다.","침착함","소통 부족"],["경쟁에서 지면 잠이 안 올 만큼 분하다.","승부욕","정서 불안"],["계획에 없던 일은 웬만하면 맡지 않는다.","계획성","유연성 부족"],["규칙에 어긋나면 사소한 것도 바로 지적한다.","원칙","존중 부족"],["일은 빨리 끝내는 것이 가장 중요하다.","실행력","품질 소홀"],["새로운 일이 생기면 하던 일을 멈추고 뛰어든다.","도전","책임감 부족"],["내가 옳다고 생각하면 끝까지 설득한다.","주도성","고집"],["팀을 위해서라면 개인 시간은 언제든 포기한다.","헌신","과장"],["남에게 부탁하느니 밤을 새우는 게 낫다.","책임감","협업 부족"],["사람들 기분을 맞추는 데 시간을 많이 쓴다.","배려","효율 부족"],["확실한 근거가 없으면 의견을 말하지 않는다.","신중함","소극성"],["한 가지에 빠지면 다른 일은 잊어버린다.","몰입","책임감 부족"],["누가 도와 달라고 하면 내 일을 미루고라도 돕는다.","협조성","우선순위 부족"],["손해를 보더라도 갈등은 피하는 게 낫다.","원만함","소극성"]];
+const ABI=[["어디서든 사람들 사이의 관계 구도를 빨리 읽는다.",2,4],["상대가 듣고 싶어 하는 말을 금방 알아챈다.",2,4],["윗사람의 기분 변화를 누구보다 빨리 알아챈다.",2,4],["누구에게 먼저 말해야 일이 풀리는지 안다.",2,4],["협상할 때 상대의 약한 부분이 잘 보인다.",2,4],["회의 분위기를 보고 말할 타이밍을 잡는다.",2,4],["처음 간 조직에서도 누가 결정권자인지 금방 알아본다.",2,4],["사람을 만나면 나에게 도움이 될지 빨리 판단이 선다.",1,3],["상대의 말에서 숨은 의도를 잘 찾아낸다.",2,4],["원하는 것을 얻으려고 상대에 맞춰 말을 바꾸는 데 능숙하다.",1,3],["회식 자리에서 누가 누구와 가까운지 금방 파악된다.",2,4],["상황에 따라 다른 모습을 보여 주는 데 능숙하다.",1,3]];
+
+/* ---------- Part 2 문장 풀 ---------- */
+const P2POS={
+EXE:["생각보다 행동이 먼저 나간다.","할 일은 그날 끝내야 마음이 편하다.","일단 시작하고 방법은 하면서 찾는다.","시작한 일은 결과를 볼 때까지 놓지 않는다.","막히면 다른 방법부터 바로 시도한다.","고민이 길지 않고 결정이 빠르다."],
+CHG:["낯선 환경에 금방 적응한다.","해 보지 않은 일에 먼저 손을 든다.","변화가 많은 곳에서 오히려 힘이 난다.","목표를 높게 잡는 편이다.","새로운 방식이 나오면 먼저 써 본다.","위험이 있어도 의미 있는 일을 택한다."],
+CRE:["엉뚱한 질문을 자주 한다.","같은 문제도 다르게 풀어 보려 한다.","아이디어를 떠올리는 시간이 즐겁다.","생각을 그림으로 정리한다.","다른 분야에서 힌트를 얻는다.","당연한 것에 의문을 갖는다."],
+LEA:["모임에서 방향을 정리하는 역할을 맡는다.","사람들을 설득하는 데 자신 있다.","결정의 책임을 지는 것이 두렵지 않다.","리더가 없으면 내가 나선다.","팀원에게 역할을 나눠 주는 것을 잘한다.","새로운 일을 먼저 제안한다."],
+CON:["약속은 반드시 지킨다.","맡은 일은 마지막까지 확인한다.","반복되는 일도 꾸준히 한다.","시키지 않아도 진행 상황을 공유한다.","정해진 기한을 넘기지 않는다.","작은 일도 대충 넘기지 않는다."],
+PLN:["일을 시작하기 전에 순서부터 정한다.","숫자와 근거로 판단한다.","결론부터 듣는 것이 편하다.","위험 요소를 미리 생각해 둔다.","자료를 체계적으로 정리한다.","'대충'이라는 말을 싫어한다."],
+GRO:["배우는 데 돈과 시간을 아끼지 않는다.","피드백을 받으면 바로 고친다.","잘하는 사람의 방식을 따라 해 본다.","일이 끝나면 돌아보고 기록한다.","모르는 것은 바로 찾아본다.","1년 뒤 목표가 분명하다."],
+EMO:["압박 속에서도 차분하다.","기분이 일에 영향을 주지 않는다.","실패해도 금방 다시 일어선다.","비판을 담담하게 받아들인다.","예상치 못한 일에도 당황하지 않는다.","스트레스를 푸는 방법이 확실하다."],
+COL:["공을 팀원과 나눈다.","갈등이 생기면 중간에서 조율한다.","다른 의견에도 끝까지 귀 기울인다.","동료가 어려워하면 먼저 돕는다.","팀 분위기를 밝게 만든다.","나와 다른 방식에서도 배운다."],
+CUS:["사람들이 어디서 불편해하는지 잘 보인다.","상대 입장에서 먼저 생각한다.","쓰는 사람의 경험부터 떠올린다.","사람들의 취향 변화에 민감하다.","후기와 리뷰를 꼼꼼히 읽는다.","작은 친절을 챙긴다."],
+HON:["불리한 사실도 그대로 말한다.","손해를 봐도 원칙을 지킨다.","실수를 먼저 인정한다.","모르는 것은 모른다고 한다.","보는 사람이 없어도 규칙을 지킨다.","잘못된 지시에는 이유를 들어 말한다."],
+COM:["처음 본 사람과도 대화를 잘 이어 간다.","어려운 내용을 쉽게 설명한다.","불편한 이야기도 미루지 않는다.","상대에 맞춰 말투를 바꾼다.","글로 생각을 정리하는 데 능하다.","말하기 전에 핵심부터 정리한다."],
+GLO:["다른 관점의 이야기를 즐겨 듣는다.","낯선 주제에도 쉽게 흥미를 느낀다.","생각이 다른 사람과도 잘 어울린다.","근거가 있으면 생각을 바꾼다.","새로운 취향을 쉽게 받아들인다.","익숙하지 않은 방식도 일단 존중한다."]
+};
+const P2NEG={
+EXE:["시작하기까지 오래 걸린다.","결정을 미룰 때가 있다.","생각이 많아 행동이 늦다."],
+CHG:["익숙한 방식을 고집할 때가 있다.","큰 변화가 생기면 불안하다.","확실하지 않으면 시도하지 않는다."],
+CRE:["새로운 아이디어를 내기 어렵다.","정해진 틀이 있어야 편하다.","검증된 방법만 쓰려 한다."],
+LEA:["앞에 나서는 것이 부담스럽다.","결정을 남에게 맡기는 편이다.","책임이 큰 역할은 피하고 싶다."],
+CON:["마감 직전에 몰아서 한다.","귀찮은 일은 미뤄 둔다.","마무리가 꼼꼼하지 못하다."],
+PLN:["계획 없이 움직일 때가 있다.","세부 사항을 놓친다.","일정을 빠듯하게 잡아 쫓긴다."],
+GRO:["익숙한 일만 하려 한다.","새 도구를 익히는 데 오래 걸린다.","같은 실수를 반복할 때가 있다."],
+EMO:["지적을 받으면 오래 신경 쓰인다.","걱정이 많은 편이다.","기분이 표정에 드러난다."],
+COL:["혼자 하는 일이 더 편하다.","내 방식을 고집할 때가 있다.","남의 일까지 챙길 여유가 없다."],
+CUS:["상대 기분을 잘 놓친다.","내 기준으로 판단할 때가 있다.","같은 설명을 반복하면 답답해진다."],
+HON:["작은 실수는 말하지 않고 넘긴다.","분위기에 맞춰 내 생각과 다른 말을 한다.","불리한 정보는 나중에 말한다.","잘 모르는 걸 아는 척한 적이 있다."],
+COM:["회의에서 말을 아낀다.","낯선 사람에게 먼저 말 걸기 어렵다.","불편한 이야기를 미룬다."],
+GLO:["생각이 다른 사람과 대화하면 피곤하다.","한번 정한 생각은 잘 안 바뀐다.","낯선 취향은 잘 이해되지 않는다."]
+};
+const P2TRAP=[["목표를 위해 규칙을 유연하게 적용한다.","정직"],["상사가 원하는 답을 먼저 알아챈다.","정직"],["작은 문제는 조용히 넘기고 일정을 지킨다.","정직"],["보고서는 보기 좋게 다듬어 올린다.","정직"],["불리한 질문은 화제를 돌려 넘긴다.","정직"],["분위기를 위해 듣기 좋은 말을 한다.","정직"],["결정권자가 누군지부터 파악한다.","존중"],["직급이 높은 사람의 의견에 먼저 맞춘다.","존중"],["말이 안 통하는 사람은 피한다.","존중"],["거래에서는 우리 이익부터 챙긴다.","상생"],["우리 팀 일을 다른 팀 요청보다 먼저 챙긴다.","상생"],["내 성과가 드러나는 일을 먼저 맡는다.","상생"],["무리하지 않고 할 수 있는 만큼만 한다.","ONLYONE"],["이미 검증된 방식을 그대로 따른다.","ONLYONE"],["실패할 것 같은 일은 처음부터 맡지 않는다.","ONLYONE"],["눈에 띄지 않게 무난하게 일한다.","ONLYONE"]];
+
+const AXES=[
+  {k:'HON',n:'정직',sub:'정직·원칙',traits:['HON'],tag:'정직',target:80},
+  {k:'PAS',n:'열정',sub:'실행·도전·주도',traits:['EXE','CHG','LEA'],tag:'ONLYONE',target:75},
+  {k:'CRE',n:'창의',sub:'창의·학습',traits:['CRE','GRO'],tag:null,target:70},
+  {k:'RES',n:'존중',sub:'협업·소통',traits:['COL','COM'],tag:'존중',target:75},
+  {k:'DUT',n:'책임',sub:'성실·계획·정서',traits:['CON','PLN','EMO'],tag:null,target:75},
+  {k:'WIN',n:'상생',sub:'고객·개방성',traits:['CUS','GLO'],tag:'상생',target:70}
+];
+const TYPES={
+  VAL:{n:'가치 함정',q:'현실적이고 일 잘하는 사람의 말처럼 들리는데, 정직·존중·상생·ONLYONE과 부딪히나?',safe:[1,2],tip:'아니다 쪽으로 분명하게. 보통이다는 거부하지 않았다는 신호로 읽혀요.',ex:'보고서 숫자는 조금 보기 좋게 반올림해도 문제없다.'},
+  ABS:{n:'절대 표현',q:"좋은 말에 '전혀', '한 번도', '언제나'가 붙었나?",safe:[1,3],tip:'사실상 아무도 해당하지 않아요. 그렇다 이상이면 과장으로 읽혀요.',ex:'약속에 늦어 본 적이 단 한 번도 없다.'},
+  HUM:{n:'누구나 겪는 일',q:'사람이라면 한 번쯤 겪는 일인가?',safe:[3,5],tip:'인정하는 쪽이 신뢰를 줘요. 아니다는 약점을 감추는 것으로 읽혀요.',ex:'내키지 않는 모임에 핑계를 대고 빠진 적이 있다.'},
+  MAL:{n:'적응 척도',q:'피해의식, 충동, 공격성, 지나친 불안을 묻는 문장인가?',safe:[1,2],tip:'대부분의 사람은 아니다에 가까워요. 일시적인 기분이 아니라 평소 모습으로 답하세요. 실제로 그렇다면 솔직하게 답하는 게 맞아요.',ex:'사람들이 뒤에서 내 이야기를 한다고 느낄 때가 많다.'},
+  TWO:{n:'두 얼굴 문장',q:'한쪽으로는 장점인데 다른 쪽으로는 단점인가?',safe:[2,4],tip:'극단(1, 5)을 피하고 기준 문장으로 답해요.',ex:'남의 평가보다 내 기준이 더 중요하다.'},
+  IND:{n:'돌려 묻는 문장',q:'남이 보는 나를 묻는다면, 좋은 평판인가 나쁜 평판인가?',safe:[1,2],tip:'나쁜 평판을 담은 문장은 따뜻하게 들려도 아니다 쪽이에요.',ex:'주변에서 내 일이 잘되고 있는지 걱정스럽게 묻는 경우가 많다.'},
+  ABI:{n:'능력과 가치 사이',q:"'~할 수 있다'(능력)인가, '~가 중요하다'(가치)인가?",safe:[2,4],tip:'능력 문장도 매우 그렇다는 정치적으로 읽힐 수 있어요. 그렇다까지가 안전해요.',ex:'어디서든 사람들 사이의 관계 구도를 빨리 읽는다.'}
+};
+const TYPE_ORDER=['VAL','ABS','HUM','MAL','TWO','IND','ABI'];
+const CFG={
+  full:{name:'실전 모드',p1t:45*60,p2:[18,7,5],p2t:15*60,per:5,low1:300,low2:120,gap:40},
+  short:{name:'짧은 연습',p1t:9*60,p2:[4,1,1],p2t:3*60,per:5,low1:60,low2:30,gap:15}
+};
+const HKEY='cft-hard-v4-history';
+let UID=0;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function sample(a,n){return shuffle(a).slice(0,n);}
+function fmt(s){s=Math.max(0,s);const m=Math.floor(s/60),r=s%60;return String(m).padStart(2,'0')+':'+String(r).padStart(2,'0');}
+function fmtDur(ms){const s=Math.round(ms/1000);const m=Math.floor(s/60);return m+'분 '+(s%60)+'초';}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+/* ---------- 문항 조립 ---------- */
+function bankTraits(){
+  const out={};
+  for(const t in BANK){
+    const items=BANK[t].map(raw=>{const m=raw.match(/^(?:#(\w+)\s)?(~)?(.+)$/);return {k:'TR',t,p:m[1]||null,r:!!m[2],s:m[3]};});
+    const pairs={};items.filter(i=>i.p).forEach(i=>(pairs[i.p]=pairs[i.p]||[]).push(i));
+    out[t]={pairs:Object.values(pairs),singles:items.filter(i=>!i.p)};
+  }
+  return out;
+}
+const BANKPOOL={
+  INT:()=>INT.map(([t,s])=>({k:'INT',t,r:false,s})),
+  WVL:()=>WVL.map(([t,r,s])=>({k:'WVL',t,r:!!r,s})),
+  ABS:()=>ABS.map(s=>({k:'ABS',s})),
+  HUM:()=>HUM.map(s=>({k:'HUM',s})),
+  MAL:()=>MAL.map(s=>({k:'MAL',s})),
+  VAL:()=>VAL.map(([s,tag,why])=>({k:'VAL',s,tag,why})),
+  TWO:()=>TWO.map(([s,good,bad])=>({k:'TWO',s,good,bad})),
+  ABI:()=>ABI.map(([s,lo,hi])=>({k:'ABI',s,safe:[lo,hi]})),
+  INDN:()=>IND.filter(x=>x[1]<0).map(([t,d,s])=>({k:'IND',t,r:true,s})),
+  INDP:()=>IND.filter(x=>x[1]>0).map(([t,d,s])=>({k:'INDP',t,r:false,s}))
+};
+const MIX={
+  full:{pairs:3,singles:5,INT:14,ABS:14,HUM:14,MAL:12,VAL:24,TWO:16,INDN:10,INDP:6,ABI:8,WVL:14},
+  short:{pairs:1,singles:0,INT:3,ABS:3,HUM:3,MAL:3,VAL:6,TWO:4,INDN:2,INDP:1,ABI:2,WVL:2}
+};
+function withIds(arr){return arr.map(o=>Object.assign({id:UID++},o));}
+function spreadPairs(arr,gap){
+  for(let round=0;round<25;round++){
+    let moved=false;const pos={};
+    arr.forEach((it,i)=>{if(it.p)(pos[it.p]=pos[it.p]||[]).push(i);});
+    for(const k in pos){const [i,j]=pos[k];if(j==null)continue;
+      if(Math.abs(i-j)<gap){const c=[];arr.forEach((it,x)=>{if(!it.p&&Math.abs(x-i)>=gap)c.push(x);});
+        if(c.length){const x=c[Math.floor(Math.random()*c.length)];[arr[j],arr[x]]=[arr[x],arr[j]];moved=true;}}}
+    if(!moved)break;
+  }
+  return arr;
+}
+function buildP1(mode,gen,seen){
+  const bt=bankTraits(),mix=MIX[mode];const items=[];let gp=0,genUsed=0;
+  for(const t in TR){
+    const g=(gen&&gen.traits[t])||{pairs:[],singles:[]};
+    const gpairs=shuffle(g.pairs).slice(0,mix.pairs);
+    gpairs.forEach(([f,b])=>{const pid='g'+(gp++);items.push({k:'TR',t,p:pid,r:false,s:f.s,gen:1},{k:'TR',t,p:pid,r:true,s:b.s,gen:1});genUsed+=2;});
+    sampleFresh(bt[t].pairs.map(p=>({p,s:p[0].s})),mix.pairs-gpairs.length,seen).forEach(x=>items.push(...x.p.map(i=>Object.assign({},i))));
+    const gs=shuffle(g.singles).slice(0,mix.singles).map(x=>Object.assign({gen:1},x));genUsed+=gs.length;
+    items.push(...gs,...sampleFresh(bt[t].singles,mix.singles-gs.length,seen));
+  }
+  for(const k in BANKPOOL){
+    if(!mix[k])continue;
+    const gl=((gen&&gen[k])||[]).map(x=>Object.assign({gen:1},x));const take=shuffle(gl).slice(0,mix[k]);genUsed+=take.length;
+    items.push(...take,...sampleFresh(BANKPOOL[k](),mix[k]-take.length,seen));
+  }
+  S.genUsed=genUsed;
+  return spreadPairs(shuffle(withIds(items)),CFG[mode].gap);
+}
+function buildP2(mode,gen,seen){
+  const [nb,nn,nt]=CFG[mode].p2;let id=0;const used=new Set();const traits=Object.keys(TR);
+  const posOf=t=>[...((gen&&gen.P2POS[t])||[]).map(s=>({s,g:1})),...P2POS[t].map(s=>({s,g:0}))];
+  const negOf=t=>[...((gen&&gen.P2NEG[t])||[]).map(s=>({s,g:1})),...P2NEG[t].map(s=>({s,g:0}))];
+  const avail=(fn,t)=>fn(t).filter(x=>!used.has(x.s));
+  const pick=(fn,t)=>{const a=avail(fn,t);const gg=a.filter(x=>x.g),fresh=a.filter(x=>!x.g&&!seen.has(x.s));const c=gg.length?gg:(fresh.length?fresh:(a.length?a:fn(t)));const x=c[Math.floor(Math.random()*c.length)];used.add(x.s);if(x.g)S.genUsed++;return x.s;};
+  const pickTraits=(fn,n)=>traits.map(t=>[t,avail(fn,t).length+Math.random()]).sort((a,b)=>b[1]-a[1]).slice(0,n).map(x=>x[0]);
+  const sets=[];
+  for(let i=0;i<nb;i++){const ts=pickTraits(posOf,3);sets.push({id:id++,type:'pos',items:ts.map(t=>({t,s:pick(posOf,t)}))});}
+  for(let i=0;i<nn;i++){const ts=pickTraits(negOf,3);sets.push({id:id++,type:'neg',items:ts.map(t=>({t,s:pick(negOf,t)}))});}
+  const trapList=[];const seenT=new Set();
+  [...shuffle((gen&&gen.P2TRAP)||[]),...shuffle(P2TRAP.filter(x=>!seen.has(x[0]))),...shuffle(P2TRAP)].forEach(x=>{if(!seenT.has(x[0])){seenT.add(x[0]);trapList.push(x);}});
+  trapList.slice(0,nt).forEach(([s,tag])=>{const ts=pickTraits(posOf,2);sets.push({id:id++,type:'trap',items:shuffle([...ts.map(t=>({t,s:pick(posOf,t)})),{t:'VAL',s,tag}])});});
+  return shuffle(sets);
+}
+
+let S={phase:'intro',mode:'full',useGen:false};
+const app=document.getElementById('app');
+/* ---------- 텍스트 도우미 ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function plain(s){return String(s).replace(/\[\[|\]\]/g,'');}
+function marked(s){return String(s).replace(/\[\[(.+?)\]\]/g,'<mark class="kp">$1</mark>');}
+const BANNED=/해외|외국|영어|글로벌|협력사|올리브영|화장품|드럭스토어|직구|코스메틱/;
+const SEENKEY='cft-seen-v4';
+function loadSeen(){try{return new Set(JSON.parse(localStorage.getItem(SEENKEY)||'[]'));}catch(e){return new Set();}}
+function saveSeen(list){try{const prev=JSON.parse(localStorage.getItem(SEENKEY)||'[]');const all=[...new Set([...list,...prev])].slice(0,900);localStorage.setItem(SEENKEY,JSON.stringify(all));}catch(e){}}
+function sampleFresh(arr,n,seen){const key=x=>plain(x.s||x);const fresh=shuffle(arr.filter(x=>!seen.has(key(x)))),old=shuffle(arr.filter(x=>seen.has(key(x))));return fresh.concat(old).slice(0,n);}
+
+/* ---------- 새 문항 생성 (Claude) ---------- */
+let SAMPLE=null,SAMPLESTATE='pending';
+SAMPLESTATE='none';
+const SEEDS=['아르바이트','동아리','조별 과제','회사 회의','가족 모임','운동','이사','장보기','대중교통','요리','친구와의 약속','온라인 쇼핑','시험 공부','봉사활동','팀 프로젝트 마감','신입 교육','회식','택배·배달','병원 예약','여행 준비','중고 거래','집안일','반려동물','스마트폰 앱','모임 총무','면접 준비','인턴','고객 응대','보고서 작성','이메일'];
+const TRAIT_DESC={EXE:'실행력(바로 행동하고 끝까지 밀어붙임)',CHG:'도전·변화(새로운 것과 변화를 반김)',CRE:'창의(다르게 생각하고 아이디어를 냄)',LEA:'주도성(앞에서 방향을 잡고 책임짐)',CON:'성실·책임(약속, 마감, 꼼꼼함)',PLN:'계획·분석(미리 계획하고 근거로 판단)',GRO:'학습·성장(스스로 배우고 피드백을 반영)',EMO:'정서 안정(압박과 비판에 흔들리지 않음)',COL:'협업·존중(동료를 돕고 다른 의견을 존중)',CUS:'고객 공감(사용자와 상대 입장을 헤아림)',HON:'정직·원칙(손해를 봐도 사실대로, 원칙대로)',COM:'소통(먼저 말하고 쉽게 전달)',GLO:'개방성(다른 생각과 낯선 것을 받아들임)'};
+function styleGuide(seeds,avoid){
+  return `너는 한국 대기업 공채 인성검사 문항을 20년 동안 만들어 온 출제자야. CJ그룹 공통 인성검사(CFT)와 같은 결의 문항을 새로 만들어.
+규칙:
+- 계열사나 직무에 치우치지 마. 해외, 외국어, 협력사, 화장품, 특정 회사 이름은 쓰지 마. 누구나 겪는 일상, 학교, 아르바이트, 동아리, 직장 상황을 고르게 써.
+- 문장은 '나는'을 뺀 1인칭 평서문, 14~40자. 어미를 섞어: '~편이다', '~때가 많다', '~한 적이 있다', '~라고 생각한다', '~하는 것이 좋다', '~게 된다'.
+- 추상적인 덕목 대신 구체적인 행동, 습관, 상황을 묘사해. 교과서 같은 문장, 정답이 뻔히 보이는 문장, 이중부정, 서로 뜻이 겹치는 문장은 피해.
+- 이번 회차 상황 키워드(골고루 섞어 써): ${seeds.join(', ')}.
+${avoid.length?`- 아래 문장들과 겹치거나 비슷하면 안 돼:\n${avoid.map(s=>'  · '+s).join('\n')}`:''}`;
+}
+function promptTraits(codes,seeds,avoid){
+  return styleGuide(seeds,avoid)+`
+
+만들 것: 아래 성향마다 짝 문항 2쌍과 단독 문항 3개.
+${codes.map(c=>`- ${c}: ${TRAIT_DESC[c]}`).join('\n')}
+짝 문항: 같은 성향을 서로 다른 상황으로 묻는 두 문장. 한 문장은 성향이 높은 쪽(dir "+"), 다른 문장은 성향이 낮은 쪽(dir "-")으로 써. 두 문장에서 성향을 드러내는 핵심 구절을 [[ ]]로 감싸. 예: "회의가 끝나면 내가 맡은 일부터 [[바로 손댄다]]." / "회의에서 정한 일을 [[며칠 묵혀 둘 때가 많다]]."
+단독 문항: [[ ]] 없이, dir은 "+" 또는 "-"를 섞어.
+JSON으로만 답해: {"items":[{"t":"EXE","pair":1,"dir":"+","s":"..."},{"t":"EXE","pair":1,"dir":"-","s":"..."},{"t":"EXE","pair":2,...},{"t":"EXE","pair":0,"dir":"-","s":"..."}]}`;
+}
+function promptTraps(seeds,avoid){
+  return styleGuide(seeds,avoid)+`
+
+만들 것: 함정 문항. 응시자가 빨리 읽으면 무심코 좋은 쪽으로 답하게 되는 문장들이야.
+- VAL 12개: 현실적이고 일 잘하는 사람의 말처럼 들리지만 정직, 존중, 상생(함께 성장), ONLYONE(최고·최초·차별화를 향한 도전) 중 하나와 부딪히는 생각. tag는 그 가치 이름, why는 왜 함정인지 응시자에게 설명하는 해요체 한두 문장(60자 안팎).
+- ABS 8개: 좋은 말에 '전혀', '한 번도', '언제나', '단 한 번도' 같은 절대 표현이 붙어 사실상 아무도 해당하지 않는 문장.
+- HUM 8개: 사람이라면 누구나 한 번쯤 겪는 사소한 약점이나 감정(예: 가끔 일을 미루고 싶다). 아니라고 답하면 과장이 되는 문장.
+- MAL 8개: 피해의식, 충동성, 공격성, 지나친 불안, 냉소를 묻는 적응 척도 문장.
+- TWO 8개: 한쪽으로 보면 장점, 다른 쪽으로 보면 단점인 문장. good과 bad에 각각 짧게.
+- IND 10개: 다른 사람이 나를 어떻게 보는지 묻는 문장. 따뜻하게 들려도 사실은 나쁜 평판인 것(dir "-")과 좋은 평판(dir "+")을 섞어. t는 관련 성향 코드(EXE,CHG,CRE,LEA,CON,PLN,GRO,EMO,COL,CUS,HON,COM,GLO).
+- ABI 5개: 관계 구도나 상대 의도를 읽는 능력을 묻는 문장. 사람을 이용하는 뉘앙스가 강하면 hi를 3, 아니면 4로.
+JSON으로만 답해: {"VAL":[{"s":"...","tag":"정직","why":"..."}],"ABS":["..."],"HUM":["..."],"MAL":["..."],"TWO":[{"s":"...","good":"...","bad":"..."}],"IND":[{"t":"CON","dir":"-","s":"..."}],"ABI":[{"s":"...","hi":4}]}`;
+}
+function promptP2(seeds,avoid){
+  return styleGuide(seeds,avoid)+`
+
+만들 것: Part 2(세 문장 중 가장 가까운 것과 먼 것 고르기)에 쓸 짧은 문장. 10~24자, '~한다', '~편이다'처럼 짧게.
+- POS: 아래 성향마다 2개씩. 서로 비슷하게 바람직하게 들려서 고르기 어려워야 해.
+- NEG: 성향마다 1개씩. 누구나 있을 법한 가벼운 약점.
+- TRAP 6개: 세트 안에 섞였을 때 그럴듯하게 들리지만 정직, 존중, 상생, ONLYONE과 부딪히는 문장. tag 포함.
+성향: ${Object.keys(TRAIT_DESC).map(c=>`${c}=${TRAIT_DESC[c]}`).join(', ')}
+JSON으로만 답해: {"POS":{"EXE":["...","..."],...},"NEG":{"EXE":["..."],...},"TRAP":[{"s":"...","tag":"존중"}]}`;
+}
+function okText(s,min,max){return typeof s==='string'&&s.length>=min&&s.length<=max&&/[가-힣]/.test(s)&&!BANNED.test(s);}
+const TAGS=['정직','존중','상생','ONLYONE'];
+function cleanTraits(j,codes){
+  const out={};codes.forEach(c=>out[c]={pairs:[],singles:[]});
+  const items=(j&&Array.isArray(j.items))?j.items:[];
+  const byPair={};
+  items.forEach(x=>{if(!x||!codes.includes(x.t)||!okText(x.s,8,70))return;const s=esc(x.s.trim());const r=x.dir==='-';
+    if(x.pair>0){if(!/\[\[.+?\]\]/.test(s))return;const k=x.t+'|'+x.pair;(byPair[k]=byPair[k]||[]).push({t:x.t,r,s});}
+    else out[x.t].singles.push({k:'TR',t:x.t,r,s:plain(s)});});
+  for(const k in byPair){const ps=byPair[k];const f=ps.find(p=>!p.r),b=ps.find(p=>p.r);if(f&&b){out[f.t].pairs.push([f,b]);}}
+  return out;
+}
+function cleanTraps(j){
+  const o={VAL:[],ABS:[],HUM:[],MAL:[],TWO:[],INDN:[],INDP:[],ABI:[]};if(!j)return o;
+  (j.VAL||[]).forEach(x=>{if(x&&okText(x.s,8,70)&&TAGS.includes(x.tag))o.VAL.push({k:'VAL',s:esc(x.s),tag:x.tag,why:typeof x.why==='string'?esc(x.why.slice(0,140)):''});});
+  ['ABS','HUM','MAL'].forEach(k=>(j[k]||[]).forEach(s=>{if(okText(s,8,70))o[k].push({k,s:esc(s)});}));
+  (j.TWO||[]).forEach(x=>{if(x&&okText(x.s,8,70))o.TWO.push({k:'TWO',s:esc(x.s),good:esc(x.good||''),bad:esc(x.bad||'')});});
+  (j.IND||[]).forEach(x=>{if(x&&TR[x.t]&&okText(x.s,8,70)){if(x.dir==='-')o.INDN.push({k:'IND',t:x.t,r:true,s:esc(x.s)});else o.INDP.push({k:'INDP',t:x.t,r:false,s:esc(x.s)});}});
+  (j.ABI||[]).forEach(x=>{if(x&&okText(x.s,8,70))o.ABI.push({k:'ABI',s:esc(x.s),safe:[x.hi===3?1:2,x.hi===3?3:4]});});
+  return o;
+}
+function cleanP2(j){
+  const o={POS:{},NEG:{},TRAP:[]};if(!j)return o;
+  for(const t in TR){o.POS[t]=((j.POS||{})[t]||[]).filter(s=>okText(s,6,40)).map(esc);o.NEG[t]=((j.NEG||{})[t]||[]).filter(s=>okText(s,6,40)).map(esc);}
+  (j.TRAP||[]).forEach(x=>{if(x&&okText(x.s,6,40)&&TAGS.includes(x.tag))o.TRAP.push([esc(x.s),x.tag]);});
+  return o;
+}
+async function generateItems(){
+  const seen=[...loadSeen()].slice(0,60);
+  const seeds=sample(SEEDS,8);
+  const codes=Object.keys(TR);const g1=codes.slice(0,7),g2=codes.slice(7);
+  const jobs=[
+    {key:'t1',label:'성향 문항 1',run:()=>SAMPLE.json(promptTraits(g1,seeds,seen),{modelTier:'default',cache:false,signal:S.genCtl.signal}),clean:j=>cleanTraits(j,g1)},
+    {key:'t2',label:'성향 문항 2',run:()=>SAMPLE.json(promptTraits(g2,seeds,seen),{modelTier:'default',cache:false,signal:S.genCtl.signal}),clean:j=>cleanTraits(j,g2)},
+    {key:'tr',label:'함정 문항',run:()=>SAMPLE.json(promptTraps(seeds,seen),{modelTier:'default',cache:false,signal:S.genCtl.signal}),clean:cleanTraps},
+    {key:'p2',label:'Part 2 문장',run:()=>SAMPLE.json(promptP2(seeds,seen),{modelTier:'default',cache:false,signal:S.genCtl.signal}),clean:cleanP2}
+  ];
+  S.genStatus={};jobs.forEach(jb=>S.genStatus[jb.key]={label:jb.label,state:'run',n:0});
+  const results={};
+  await Promise.all(jobs.map(async jb=>{
+    try{const j=await jb.run();const c=jb.clean(j);results[jb.key]=c;S.genStatus[jb.key].state='done';S.genStatus[jb.key].n=countGen(jb.key,c);}
+    catch(e){S.genStatus[jb.key].state=(e&&e.code==='cancelled')?'skip':'fail';S.genStatus[jb.key].code=e&&e.code;}
+    if(S.phase==='prep')renderPrep();
+  }));
+  const gen={traits:{},VAL:[],ABS:[],HUM:[],MAL:[],TWO:[],INDN:[],INDP:[],ABI:[],P2POS:{},P2NEG:{},P2TRAP:[]};
+  for(const t in TR)gen.traits[t]={pairs:[],singles:[]};
+  ['t1','t2'].forEach(k=>{const r=results[k];if(r)for(const t in r){gen.traits[t]=r[t];}});
+  if(results.tr)for(const k in results.tr)gen[k]=results.tr[k];
+  if(results.p2){gen.P2POS=results.p2.POS;gen.P2NEG=results.p2.NEG;gen.P2TRAP=results.p2.TRAP;}
+  return gen;
+}
+function countGen(key,c){
+  if(key==='t1'||key==='t2')return Object.values(c).reduce((s,x)=>s+x.pairs.length*2+x.singles.length,0);
+  if(key==='tr')return Object.values(c).reduce((s,x)=>s+x.length,0);
+  return Object.values(c.POS).reduce((s,x)=>s+x.length,0)+Object.values(c.NEG).reduce((s,x)=>s+x.length,0)+c.TRAP.length;
+}
+
+function loadHist(){try{const v=localStorage.getItem(HKEY);return v?JSON.parse(v):[];}catch(e){return [];}}
+function saveHist(entry){try{const h=loadHist();h.unshift(entry);localStorage.setItem(HKEY,JSON.stringify(h.slice(0,10)));}catch(e){}}
+function setup(gen){
+  const seen=loadSeen();S.genUsed=0;
+  const p1=buildP1(S.mode,gen,seen);const p2=buildP2(S.mode,gen,seen);
+  Object.assign(S,{p1,p2,a1:{},a2:{},page:0,setIdx:0,p1Start:0,p1End:0,p1Timeout:false,p2Start:0,p2End:0,p2Timeout:false,quitArmed:false,pageTimes:[],pageStart:0});
+  S.totalItems=p1.length+p2.reduce((s,x)=>s+x.items.length,0);
+  saveSeen([...p1.map(i=>plain(i.s)),...p2.flatMap(x=>x.items.map(i=>i.s))]);
+}
+function startPrep(){
+  if(S.useGen&&SAMPLE){
+    S.genCtl=new AbortController();S.prepDone=false;S.prepStart=Date.now();S.genStatus={};
+    S.phase='prep';render();
+    clearInterval(S.prepTimer);S.prepTimer=setInterval(()=>{const el=document.getElementById('prepsec');if(el)el.textContent=Math.round((Date.now()-S.prepStart)/1000)+'초';},1000);
+    const guard=setTimeout(()=>{try{S.genCtl.abort();}catch(e){}},150000);
+    generateItems().then(gen=>{clearTimeout(guard);finishPrep(gen);}).catch(()=>{clearTimeout(guard);finishPrep(null);});
+  }else{setup(null);goPhase('guide1');}
+}
+function finishPrep(gen){if(S.prepDone)return;S.prepDone=true;clearInterval(S.prepTimer);setup(gen);goPhase('guide1');}
+/* ---------- 진행 화면 ---------- */
+function startTimer(sec,low,onEnd){
+  clearInterval(S.timer);S.deadline=Date.now()+sec*1000;
+  const tick=()=>{const left=Math.max(0,S.deadline-Date.now());const s=Math.ceil(left/1000);const el=document.getElementById('timer');
+    if(el){el.textContent=fmt(s);el.classList.toggle('low',s<=low);}if(left<=0){clearInterval(S.timer);onEnd(true);}};
+  tick();S.timer=setInterval(tick,250);
+}
+function render(){
+  const f={intro,prep,guide1,p1,guide2,p2,result}[S.phase];app.innerHTML=f();
+  if(S.phase==='p1'||S.phase==='p2'){const el=document.getElementById('timer');if(el)el.textContent=fmt(Math.ceil((S.deadline-Date.now())/1000));}
+  if(S.phase==='intro')animateStrip();window.scrollTo(0,0);
+}
+function animateStrip(){
+  const spans=[...document.querySelectorAll('.omr-strip span')];const pattern=[3,1,4,1,2,3,4,0];
+  spans.forEach((sp,i)=>{const row=Math.floor(i/5);if(i%5===pattern[row%pattern.length]){setTimeout(()=>sp.classList.add('fill'),250+row*180);}});
+}
+function intro(){
+  const h=loadHist();let strip='';for(let r=0;r<4;r++){for(let i=1;i<=5;i++)strip+=`<span>${i}</span>`;}
+  const hist=h.length?`<section class="sheet block"><h2>지난 연습 기록</h2><div class="hist-wrap"><table class="hist"><thead><tr><th>날짜</th><th>모드</th><th>CJ 핏</th><th>판정</th><th>일관성</th><th>응답 신뢰도</th><th>가치 함정</th><th>Part 1 소요</th></tr></thead><tbody>${h.map(e=>`<tr><td>${e.d}</td><td>${e.mode}</td><td>${e.fit}</td><td>${e.verdict}</td><td>${e.cons}%</td><td>${e.lie}</td><td>${e.val}</td><td>${e.p1}</td></tr>`).join('')}</tbody></table></div></section>`:'';
+  return `<div class="wrap">
+  <section class="sheet hero">
+    <h1>CJ CFT 연습실 심화</h1>
+    <p class="lead">풀 때마다 함정 문항이 새로 섞여 나와요. 끝나면 CJ 인재상 6축 그래프로 지금 응답이 CJ 쪽에 얼마나 맞는지, 어디서 흔들렸고 무엇부터 고칠지 보여 드려요.</p>
+    <div class="omr-strip" aria-hidden="true" style="max-width:220px">${strip}</div>
+  </section>
+  <section class="sheet block">
+    <h2>연습 방식</h2>
+    <div class="modes">
+      <button class="mode" data-mode="full" aria-pressed="${S.mode==='full'}"><strong>실전 모드</strong><span>Part 1 275문항 45분, Part 2 30세트 15분</span></button>
+      <button class="mode" data-mode="short" aria-pressed="${S.mode==='short'}"><strong>짧은 연습</strong><span>Part 1 55문항 9분, Part 2 6세트 3분</span></button>
+    </div>
+    
+    <div class="actions"><button class="btn" data-act="start">연습 시작하기</button></div>
+  </section>
+  <section class="sheet block rules">
+    <h2>이번 버전에 들어 있는 것</h2>
+    <p>문항은 실제 인성검사처럼 구체적인 행동, 생활 습관, 일에 대한 가치관을 묻는 문장 위주예요. 특정 직무나 계열사에 치우치지 않은 CJ 공통 인재상 기준이에요.</p><p>문장 400여 개 중에서 매번 다르게 뽑고, 이전에 풀었던 문장은 뒤로 미뤄요. 그래서 풀 때마다 다른 시험지가 나와요.</p><p>사이사이에 함정 문장이 섞여 있어요. 가치 함정, 절대 표현, 누구나 겪는 일, 적응 척도, 두 얼굴 문장, 돌려 묻는 문장, 능력과 가치 사이에 걸친 문장, 이렇게 일곱 가지예요.</p>
+    <p>같은 성향을 묻는 짝 문항은 40문항 이상 떨어뜨려 놨어요. 기억이 아니라 기준으로 답해야 일관성이 나와요.</p>
+    <p>Part 2는 실제 검사처럼 서로 다른 성향의 문장 셋을 묶어 매번 새로 만들어요. 비슷하게 좋은 말끼리 묶인 세트가 대부분이고, 약점끼리 묶인 세트와 그럴듯한 가치 함정이 하나 숨은 세트가 섞여 있어요.</p>
+    <p class="muted">문항과 CJ 기준선은 연습용으로 만든 것이에요. 실제 CFT의 문항이나 채점 기준과는 무관해요.</p>
+  </section>
+  ${hist}</div>`;
+}
+function prepRows(){return Object.values(S.genStatus||{}).map(x=>`<div class="prow2"><span class="pst ${x.state}">${x.state==='done'?'✓':x.state==='run'?'…':x.state==='skip'?'–':'!'}</span><span>${x.label}</span><span class="muted">${x.state==='done'?x.n+'개':x.state==='run'?'만드는 중':x.state==='skip'?'건너뜀':'실패, 기본 문항으로 채워요'}</span></div>`).join('');}
+function prep(){
+  return `<div class="wrap"><section class="sheet guide">
+    <h2>이번 회차 문항을 새로 만드는 중이에요</h2>
+    <p class="muted" style="margin-top:8px">Claude가 같은 결의 새 문장을 만들고 있어요. 보통 30초에서 1분 반 정도 걸려요. 만들어진 문장은 기본 문항과 섞어서 275문항을 채워요.</p>
+    <div class="preplist" id="preplist">${prepRows()}</div>
+    <p class="muted" style="font-size:14px">경과 <span id="prepsec">0초</span></p>
+    <div class="actions"><button class="btn ghost" data-act="skipgen">기다리지 않고 기본 문항으로 시작</button></div>
+  </section></div>`;
+}
+function renderPrep(){const el=document.getElementById('preplist');if(el)el.innerHTML=prepRows();}
+function guide1(){
+  const c=CFG[S.mode];const n=S.p1.length;
+  return `<div class="wrap"><section class="sheet guide">
+    <h2>Part 1</h2>
+    <div class="facts"><div><b>${n}</b><span>문항</span></div><div><b>${c.p1t/60}분</b><span>제한 시간</span></div><div><b>${Math.ceil(n/c.per)}</b><span>페이지</span></div></div>
+    ${S.genUsed?`<p style="margin-bottom:12px"><b>이번 회차:</b> 새로 만든 문장 ${S.genUsed}개를 기본 문장과 섞었어요.</p>`:''}
+    <p>각 문장이 나와 얼마나 맞는지 1(매우 아니다)부터 5(매우 그렇다)까지 고르세요. 문장 끝까지 읽고, 절대 표현과 부정어, 문장이 능력을 묻는지 가치를 묻는지에 주의하세요.</p>
+    <p class="muted" style="margin-top:8px">키보드 숫자 1~5로 표시된 문항에 바로 답할 수 있고, Enter로 다음 페이지로 넘어가요.</p>
+    <div class="actions"><button class="btn" data-act="go1">Part 1 시작하기</button><button class="btn ghost" data-act="home">처음으로</button></div>
+  </section></div>`;
+}
+function topbar(part,sub,pct){
+  return `<div class="bar"><div class="bar-in"><span class="bar-part">${part}</span><span class="bar-sub">${sub}</span><span class="timer" id="timer" role="timer" aria-live="off">--:--</span><button class="quit${S.quitArmed?' armed':''}" data-act="quit">${S.quitArmed?'한 번 더 누르면 종료':'그만두기'}</button></div><div class="prog"><i style="width:${pct}%"></i></div></div>`;
+}
+function curItemId(){const c=CFG[S.mode];const page=S.p1.slice(S.page*c.per,S.page*c.per+c.per);const u=page.find(it=>S.a1[it.id]==null);return u?u.id:null;}
+function p1(){
+  const c=CFG[S.mode];const total=Math.ceil(S.p1.length/c.per);const start=S.page*c.per;const page=S.p1.slice(start,start+c.per);
+  const answered=Object.keys(S.a1).length;const cur=curItemId();
+  const rows=page.map((it,i)=>{const v=S.a1[it.id];
+    return `<div class="q${it.id===cur?' cur':''}" id="q${it.id}"><span class="num">${start+i+1}</span><span class="qtext">${plain(it.s)}</span><div class="bubs" role="radiogroup" aria-label="${start+i+1}번 응답">${[1,2,3,4,5].map(n=>`<button class="bub" data-q="${it.id}" data-v="${n}" aria-pressed="${v===n}" aria-label="${SCALE[n-1]}">${n}</button>`).join('')}</div></div>`;}).join('');
+  const done=page.every(it=>S.a1[it.id]!=null);const last=S.page===total-1;
+  return topbar('Part 1',`${S.page+1} / ${total} 페이지, 응답 ${answered}`,Math.round(answered/S.p1.length*100))+
+  `<div class="wrap"><section class="sheet page">
+    <div class="scale-head"><span class="sp"></span><span class="sp"></span><div class="labels">${SCALE.map(s=>`<span>${s.replace(' ','<br>')}</span>`).join('')}</div></div>
+    ${rows}
+    <div class="pagefoot"><span class="hint">${done?'<span class="kbd">Enter</span> 다음':'이 페이지 문항에 모두 답하면 넘어갈 수 있어요'}</span><button class="btn" data-act="next1" ${done?'':'disabled'}>${last?'Part 1 제출하기':'다음 페이지'}</button></div>
+  </section></div>`;
+}
+function guide2(){
+  const c=CFG[S.mode];const un=S.p1.length-Object.keys(S.a1).length;const n=S.p2.length;
+  return `<div class="wrap"><section class="sheet guide">
+    <p class="muted">${S.p1Timeout?'Part 1 시간이 끝났어요.':'Part 1을 제출했어요.'} 소요 ${fmtDur(S.p1End-S.p1Start)}${un?`, 미응답 ${un}문항`:''}</p>
+    <h2 style="margin-top:8px">Part 2</h2>
+    <div class="facts"><div><b>${n}</b><span>세트</span></div><div><b>${c.p2t/60}분</b><span>제한 시간</span></div><div><b>${Math.round(c.p2t/n)}초</b><span>세트당</span></div></div>
+    <p>세 문장 중 나와 가장 가까운 것 하나, 가장 먼 것 하나를 고르세요. 세 문장이 모두 약점인 세트도, 좋은 말 사이에 함정이 숨은 세트도 있어요.</p>
+    <div class="actions"><button class="btn" data-act="go2">Part 2 시작하기</button></div>
+  </section></div>`;
+}
+function p2(){
+  const set=S.p2[S.setIdx];const a=S.a2[set.id]||{};const done=a.m!=null&&a.l!=null;const last=S.setIdx===S.p2.length-1;
+  const rows=set.items.map((it,i)=>`<div class="opt"><span class="qtext">${plain(it.s)}</span><span class="bubcell"><button class="bub" data-set="${set.id}" data-k="m" data-i="${i}" aria-pressed="${a.m===i}" aria-label="가장 가깝다">가</button></span><span class="bubcell"><button class="bub" data-set="${set.id}" data-k="l" data-i="${i}" aria-pressed="${a.l===i}" aria-label="가장 멀다">멀</button></span></div>`).join('');
+  return topbar('Part 2',`${S.setIdx+1} / ${S.p2.length} 세트`,Math.round(S.setIdx/S.p2.length*100))+
+  `<div class="wrap"><section class="sheet page">
+    <div class="set-head"><span style="text-align:left">${S.setIdx+1}번 세트</span><span>가장 가깝다</span><span>가장 멀다</span></div>
+    ${rows}
+    <div class="pagefoot"><span class="hint">${done?'<span class="kbd">Enter</span> 다음':'가까운 것과 먼 것을 하나씩 고르세요'}</span><button class="btn" data-act="next2" ${done?'':'disabled'}>${last?'검사 마치기':'다음 세트'}</button></div>
+  </section></div>`;
+}
+/* ---------- 분석 ---------- */
+function trapStatus(it,v){
+  const [lo,hi]=it.safe||TYPES[it.k].safe;
+  if(v>=lo&&v<=hi)return 'ok';
+  if(it.k==='VAL'&&v===3)return 'amb';
+  if((it.k==='IND'||it.k==='MAL')&&v===3)return 'amb';
+  return 'hit';
+}
+function analyze(){
+  const adj=it=>{const v=S.a1[it.id];return v==null?null:(it.r?6-v:v);};
+  const sc={};for(const t in TR)sc[t]={sum:0,n:0};
+  const pairs={},dist=[0,0,0,0,0],order=[];
+  const traps={};TYPE_ORDER.forEach(k=>traps[k]={n:0,hits:[],amb:[],counts:[0,0,0,0,0]});
+  S.p1.forEach(it=>{
+    const v=S.a1[it.id];if(v!=null){dist[v-1]++;order.push(v);}
+    if(traps[it.k]&&v!=null){const g=traps[it.k];g.n++;g.counts[v-1]++;const st=trapStatus(it,v);if(st==='hit')g.hits.push(it);else if(st==='amb')g.amb.push(it);}
+    if(it.t&&TR[it.t]){const a=adj(it);if(a!=null){sc[it.t].sum+=a;sc[it.t].n++;}}
+    if(it.p)(pairs[it.p]=pairs[it.p]||[]).push(it);
+  });
+  const score={};for(const t in sc)score[t]=sc[t].n?Math.round((sc[t].sum/sc[t].n-1)/4*100):null;
+  const pd=[];for(const k in pairs){const ps=pairs[k];if(ps.length===2){const a=adj(ps[0]),b=adj(ps[1]);if(a!=null&&b!=null)pd.push({k,d:Math.abs(a-b),a,b,items:ps,t:ps[0].t});}}
+  const avgD=pd.length?pd.reduce((s,x)=>s+x.d,0)/pd.length:0;
+  const cons=Math.round(100*(1-avgD/4));
+  const shaky=pd.filter(x=>x.d>=2).sort((a,b)=>b.d-a.d);
+  const tcons={};for(const t in TR){const xs=pd.filter(x=>x.t===t);tcons[t]=xs.length?xs.reduce((s,x)=>s+x.d,0)/xs.length:null;}
+  const answered=order.length;
+  let streak=0,maxStreak=0,prev=null;order.forEach(v=>{streak=(v===prev)?streak+1:1;prev=v;if(streak>maxStreak)maxStreak=streak;});
+  // 신뢰도
+  const oc=traps.ABS.hits.length+traps.HUM.hits.length,ocN=traps.ABS.n+traps.HUM.n,ocR=ocN?oc/ocN:0;
+  let lie,lieCls;if(ocR<=0.1){lie='좋아요';lieCls='good';}else if(ocR<=0.25){lie='조금 과해요';lieCls='mid';}else{lie='과장으로 보여요';lieCls='bad';}
+  // Part 2
+  const net={},app={};for(const t in TR){net[t]=0;app[t]=0;}
+  let p2un=0;const negHon=[],trapPick=[],trapAvoid=[];
+  S.p2.forEach(set=>{set.items.forEach(it=>{if(TR[it.t])app[it.t]++;});const a=S.a2[set.id];if(!a||a.m==null||a.l==null){p2un++;return;}
+    const m=set.items[a.m],l=set.items[a.l];
+    if(set.type==='neg'){net[m.t]--;net[l.t]++;if(m.t==='HON')negHon.push(m);}
+    else{ if(m.t==='VAL')trapPick.push(m);else net[m.t]++; if(l.t==='VAL')trapAvoid.push(l);else net[l.t]--; }
+  });
+  // 가치 함정 종합
+  const vh=traps.VAL.hits.length+trapPick.length,va=traps.VAL.amb.length;
+  let val,valCls;if(vh===0&&va<=2){val='좋아요';valCls='good';}else if(vh<=2){val='조심';valCls='mid';}else{val='위험';valCls='bad';}
+  // 선명도
+  const vals=Object.values(score).filter(x=>x!=null);const spread=vals.length?Math.max(...vals)-Math.min(...vals):0;
+  const strong=answered?dist[4]/answered:0;
+  let sharp,sharpCls;if(spread>=25){sharp='잘 보여요';sharpCls='good';}else if(spread>=15){sharp='보통';sharpCls='mid';}else{sharp='안 보여요';sharpCls='bad';}
+  // 6축
+  const axes=AXES.map(ax=>{
+    const ts=ax.traits.map(t=>score[t]).filter(x=>x!=null);let base=ts.length?ts.reduce((a,b)=>a+b,0)/ts.length:0;
+    const p2=clamp(ax.traits.reduce((s,t)=>s+net[t],0)*2,-10,10);
+    let pen=0;
+    if(ax.tag){pen+=traps.VAL.hits.filter(i=>i.tag===ax.tag).length*6+traps.VAL.amb.filter(i=>i.tag===ax.tag).length*2+trapPick.filter(i=>i.tag===ax.tag).length*5;}
+    if(ax.k==='HON')pen+=negHon.length*4;
+    if(ax.k==='DUT')pen+=traps.MAL.hits.length*4+traps.MAL.amb.length;
+    const v=Math.round(clamp(base+p2-pen,0,100));
+    return Object.assign({},ax,{v,base:Math.round(base),p2,pen});
+  });
+  // 핏 점수
+  let fit=axes.reduce((s,a)=>s+Math.min(a.v/a.target,1),0)/axes.length*100;
+  if(lieCls==='bad')fit-=10;else if(lieCls==='mid')fit-=4;
+  if(cons<85)fit-=(85-cons)*0.5;
+  fit-=Math.min(vh*3,15);
+  fit=Math.round(clamp(fit,0,100));
+  const honAx=axes.find(a=>a.k==='HON');
+  let verdict,vCls,vSum;
+  if(honAx.v<60||vh>=3||lieCls==='bad'){verdict='걸러질 수 있어요';vCls='bad';vSum='정직이나 가치관을 묻는 문장, 또는 과장된 답에서 탈락 신호가 보여요. 아래 1번부터 고쳐 보세요.';}
+  else if(fit>=90){verdict='CJ와 잘 맞아요';vCls='good';vSum='CJ 기준선을 대부분 넘었고 함정에도 거의 안 걸렸어요. 실전에서도 지금처럼 답하면 돼요.';}
+  else if(fit>=78){verdict='조금만 다듬으면 돼요';vCls='mid';vSum='큰 방향은 CJ와 맞아요. 아래 고칠 점 몇 개만 다듬으면 돼요.';}
+  else{verdict='아직 거리가 있어요';vCls='bad';vSum='CJ 기준선보다 안쪽으로 들어간 항목이 여럿이에요. 아래 고칠 점을 순서대로 보세요.';}
+  // 속도
+  const per=S.pageTimes.map(x=>x.sec/x.n);
+  const avgPer=S.p1.length?(S.p1End-S.p1Start)/1000/Math.max(answered,1):0;
+  const fastPages=per.filter(x=>x<4).length;
+  // 엇갈린 성향
+  const sorted=Object.keys(TR).filter(t=>score[t]!=null).sort((a,b)=>score[b]-score[a]);
+  const top=new Set(sorted.slice(0,4)),bot=new Set(sorted.slice(-4));
+  const mism=S.mode==='full'?Object.keys(TR).filter(t=>(top.has(t)&&net[t]<=-2)||(bot.has(t)&&net[t]>=2)):[];
+  return {score,dist,answered,un1:S.p1.length-answered,cons,shaky,pd,tcons,maxStreak,traps,oc,ocN,ocR,lie,lieCls,net,app,p2un,negHon,trapPick,trapAvoid,vh,va,val,valCls,spread,strong,sharp,sharpCls,axes,fit,verdict,vCls,vSum,per,avgPer,fastPages,mism};
+}
+
+/* ---------- 개선 포인트 ---------- */
+function improvements(R){
+  const L=[];const tn=t=>TR[t][0];
+  if(R.vh)L.push({sev:3,title:'가치 함정에 동의했어요',data:`Part 1 동의 ${R.traps.VAL.hits.length}개, Part 2 함정 선택 ${R.trapPick.length}개, 보통이다 ${R.va}개`,why:'CJ는 정직과 존중을 행동원칙 맨 앞에 둬요. 한두 개만 걸려도 가치관이 맞지 않는 사람으로 읽힐 수 있어요.',how:"'~해도 괜찮다', '~가 중요하다', '~할 필요 없다'로 끝나는 문장은 원칙과 부딪히는지 먼저 보세요."});
+  else if(R.va>2)L.push({sev:2,title:'가치 함정에 보통이다가 많아요',data:`보통이다 ${R.va}개`,why:'가치 문장에서 보통이다는 거부하지 않았다는 신호로 읽혀요.',how:'실제로 동의하지 않는다면 아니다로 분명하게 답하세요.'});
+  if(R.lieCls!=='good')L.push({sev:R.lieCls==='bad'?3:2,title:'과장으로 읽히는 답이 있어요',data:`절대 표현에 동의 ${R.traps.ABS.hits.length}개, 누구나 겪는 일을 부정 ${R.traps.HUM.hits.length}개`,why:'완벽한 사람은 CJ가 원하는 사람이 아니라 신뢰도가 낮은 사람으로 읽혀요.',how:"'전혀, 한 번도, 언제나'가 보이면 멈추고, 사람다운 약점은 보통이다~그렇다로 인정하세요."});
+  const hon=R.axes.find(a=>a.k==='HON');
+  if(hon.v<hon.target)L.push({sev:hon.v<60?3:2,title:'정직 축이 기준선보다 낮아요',data:`정직 ${hon.v}점 (기준선 ${hon.target})`,why:'CJ 행동원칙의 첫 번째가 정직이에요. 다른 축보다 먼저 채워야 해요.',how:'실수, 보고, 원칙을 묻는 문장은 분명하게 답하고, 반대 방향 문장에서 보통이다를 피하세요.'});
+  if(R.cons<85){const w=Object.keys(R.tcons).filter(t=>R.tcons[t]!=null&&R.tcons[t]>=1).sort((a,b)=>R.tcons[b]-R.tcons[a]).slice(0,3).map(tn);
+    L.push({sev:R.cons<75?3:2,title:'같은 성향에 대한 답이 엇갈렸어요',data:`일관성 ${R.cons}%${w.length?`, 흔들린 영역: ${w.join(', ')}`:''}`,why:'응답이 엇갈리면 결과 자체를 믿기 어려워서 해석 전에 걸러질 수 있어요.',how:'흔들린 영역마다 기준 문장 하나를 정해 두고, 반대 방향 문장은 부정어에서 한 번 멈추세요.'});}
+  if(R.traps.MAL.hits.length>=2)L.push({sev:R.traps.MAL.hits.length>=4?3:2,title:'적응 척도 문장에 그렇다 이상으로 답했어요',data:`${R.traps.MAL.hits.length}개, 보통이다 ${R.traps.MAL.amb.length}개`,why:'피해의식, 충동, 공격성, 지나친 불안을 거르는 문장이에요. 여러 개가 겹치면 조직 적응에 대한 우려로 읽힐 수 있어요.',how:'그날 기분이 아니라 평소 모습으로 답하세요. 실제로 해당하지 않는다면 아니다로 분명히 하면 돼요.'});
+  if(R.traps.TWO.hits.length>=2)L.push({sev:2,title:'두 얼굴 문장에 극단으로 답했어요',data:`${R.traps.TWO.hits.length}개 문장에 1 또는 5`,why:'한쪽으로 장점인 문장도 다른 쪽에서 단점으로 채점될 수 있어요.',how:'장점과 단점이 같이 보이면 2~4 사이에서 기준 문장대로 답하세요.'});
+  if(R.traps.IND.hits.length)L.push({sev:2,title:'나쁜 평판을 담은 문장에 동의했어요',data:`${R.traps.IND.hits.length}개`,why:"'주변에서 걱정해 준다', '한 번 더 확인한다'는 따뜻하게 들려도 신뢰가 낮다는 뜻이에요.",how:'남이 보는 나를 묻는 문장은 좋은 평판인지 나쁜 평판인지로 번역해서 답하세요.'});
+  if(R.sharpCls!=='good'||R.strong<0.1)L.push({sev:2,title:'강점이 잘 안 보여요',data:`성향 최고-최저 차이 ${R.spread}점, 매우 그렇다 ${Math.round(R.strong*100)}%`,why:'다 무난한 사람은 기억에 남지 않고 직무 적합성도 흐려져요.',how:'실제 경험이 받쳐 주는 강점 문장은 매우 그렇다를 써도 괜찮아요.'});
+  if(R.avgPer<4&&!S.p1Timeout)L.push({sev:2,title:'너무 빨리 풀었어요',data:`문항당 평균 ${R.avgPer.toFixed(1)}초, 4초 미만 페이지 ${R.fastPages}개`,why:'함정 문항은 빨리 읽을수록 걸리기 쉬워요.',how:'문항당 6초 정도로 읽고 절대 표현, 두 얼굴, 돌려 묻기 세 가지만 확인하세요.'});
+  if(S.p1Timeout)L.push({sev:3,title:'시간이 부족했어요',data:`미응답 ${R.un1}문항`,why:'미응답은 그 자체로 불성실하게 읽힐 수 있어요.',how:'한 문항에 10초 넘게 머물지 마세요.'});
+  if(R.negHon.length)L.push({sev:2,title:'약점 세트에서 정직 관련 약점을 골랐어요',data:`${R.negHon.length}번`,why:'세 약점 중 정직 관련 약점을 인정하면 다른 약점보다 무겁게 읽혀요.',how:'실제로 해당하는 다른 약점을 가장 가깝다로, 정직 약점은 가장 멀다로 고르세요.'});
+  const lowAx=R.axes.filter(a=>a.k!=='HON'&&a.v<a.target-10).map(a=>a.n);
+  if(lowAx.length)L.push({sev:1,title:'기준선보다 낮은 축이 있어요',data:lowAx.join(', '),why:'CJ가 보고 싶은 모습 중 덜 드러난 부분이에요.',how:'그 성향을 보여 준 실제 경험을 떠올리고 답하세요. 없는 경험을 만들 필요는 없어요.'});
+  if(R.traps.ABI.hits.length)L.push({sev:1,title:'능력 문장에 매우 그렇다를 줬어요',data:`${R.traps.ABI.hits.length}개`,why:'관계 구도나 상대 의도를 읽는 능력은 강하게 주장하면 정치적으로 읽힐 수 있어요.',how:'능력 문장은 그렇다까지가 안전해요.'});
+  if(R.maxStreak>=7)L.push({sev:1,title:'같은 번호를 연속으로 눌렀어요',data:`최대 ${R.maxStreak}번 연속`,why:'문장을 읽지 않고 찍은 패턴으로 의심받을 수 있어요.',how:'같은 번호가 6번 넘게 이어지면 문장을 다시 읽어 보세요.'});
+  if(R.mism.length)L.push({sev:1,title:'Part 1과 Part 2가 엇갈렸어요',data:R.mism.map(tn).join(', '),why:'두 파트가 다른 사람을 그리면 진짜 우선순위가 어디인지 흐려져요.',how:'나다운 성향 세 개를 정해 두고 Part 2에서 가장 멀다로 고르지 마세요.'});
+  return L.sort((a,b)=>b.sev-a.sev);
+}
+
+/* ---------- 시각화 ---------- */
+function hexSVG(axes){
+  const cx=180,cy=174,R=112;
+  const pt=(i,v)=>{const a=(-90+i*60)*Math.PI/180;return [cx+R*v/100*Math.cos(a),cy+R*v/100*Math.sin(a)];};
+  const poly=vs=>vs.map((v,i)=>pt(i,v).map(n=>n.toFixed(1)).join(',')).join(' ');
+  let g='';
+  [20,40,60,80,100].forEach(r=>{g+=`<polygon class="ring" points="${poly(axes.map(()=>r))}"/>`;});
+  axes.forEach((a,i)=>{const [x,y]=pt(i,100);g+=`<line class="spoke" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;});
+  g+=`<polygon class="target" points="${poly(axes.map(a=>a.target))}"/>`;
+  g+=`<polygon class="me" points="${poly(axes.map(a=>a.v))}"/>`;
+  axes.forEach((a,i)=>{const [x,y]=pt(i,a.v);g+=`<circle class="dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5"/>`;});
+  axes.forEach((a,i)=>{const [x,y]=pt(i,128);const anchor=Math.abs(x-cx)<5?'middle':(x>cx?'start':'end');const dy=i===0?-16:(i===3?6:0);
+    g+=`<text class="lab" x="${x.toFixed(1)}" y="${(y+dy).toFixed(1)}" text-anchor="${anchor}">${a.n}</text><text class="val${a.v<a.target?' low':''}" x="${x.toFixed(1)}" y="${(y+dy+16).toFixed(1)}" text-anchor="${anchor}">${a.v} / ${a.target}</text>`;});
+  return `<svg viewBox="0 0 360 352" role="img" aria-label="CJ 인재상 6축 그래프: ${axes.map(a=>a.n+' '+a.v+'점').join(', ')}">${g}</svg>`;
+}
+function meter(label,val,target,txt,cls){
+  const col=cls==='good'?'var(--ok)':cls==='mid'?'var(--warn)':'var(--omr)';
+  return `<div class="meter"><span>${label}</span><span class="mt"><i style="width:${clamp(val,0,100)}%;background:${col}"></i><b style="left:${target}%"></b></span><span class="mv" style="color:${col}">${txt}</span></div>`;
+}
+function scale5(v,zone){
+  const inZ=zone?(v>=zone[0]&&v<=zone[1]):true;
+  const cells=[1,2,3,4,5].map(n=>{let cl=[];if(zone&&n>=zone[0]&&n<=zone[1])cl.push('z');if(n===v)cl.push(inZ?'me':'off');return `<span class="${cl.join(' ')}"><b>${n}</b><small>${SCALE[n-1]}</small></span>`;}).join('');
+  return `<div class="sc5" role="img" aria-label="내 답 ${SCALE[v-1]}${zone?`, 일관된 범위 ${SCALE[zone[0]-1]}부터 ${SCALE[zone[1]-1]}`:''}">${cells}</div>`;
+}
+function speedSVG(per){
+  if(!per.length)return '';
+  const W=600,H=150,pad=22,bw=(W-pad*2)/per.length;const max=Math.max(12,...per);
+  const y=v=>H-18-(v/max)*(H-40);
+  let bars=per.map((v,i)=>`<rect class="sb${v<4?' fast':''}" x="${(pad+i*bw+bw*0.15).toFixed(1)}" y="${y(v).toFixed(1)}" width="${(bw*0.7).toFixed(1)}" height="${(H-18-y(v)).toFixed(1)}" rx="1"/>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="페이지별 문항당 풀이 시간">${bars}<line class="tl" x1="${pad}" x2="${W-pad}" y1="${y(6).toFixed(1)}" y2="${y(6).toFixed(1)}"/><text class="ax" x="${pad}" y="12">문항당 초 (점선: 권장 6초)</text><text class="ax" x="${pad}" y="${H-4}">1페이지</text><text class="ax" x="${W-pad}" y="${H-4}" text-anchor="end">${per.length}페이지</text></svg>`;
+}
+const TYPE_WHY={
+  ABS:it=>"'전혀', '한 번도', '언제나' 같은 절대 표현이 붙어 사실상 아무도 해당하지 않는 문장이에요. 그렇다 이상이면 과장으로 읽혀요.",
+  HUM:it=>"누구나 한 번쯤 겪는 일이에요. 아니라고 하면 약점을 감추는 사람으로 읽혀서 오히려 신뢰가 떨어져요.",
+  MAL:it=>"피해의식, 충동, 공격성, 지나친 불안을 거르는 문장이에요. 그날 기분이 아니라 평소 모습으로 답하세요.",
+  TWO:it=>it.good?`${it.good}으로 보면 장점, ${it.bad}으로 보면 단점인 문장이에요. 어느 쪽으로 채점될지 모르니 극단은 피해요.`:"한쪽으로는 장점, 다른 쪽으로는 단점인 문장이라 극단은 피해요.",
+  IND:it=>"따뜻하게 들리지만 주변이 나를 못 믿는다는 뜻, 즉 나쁜 평판을 담은 문장이에요.",
+  ABI:it=>"능력을 묻는 문장이지만 매우 그렇다는 사람을 이용하는 정치적인 성향으로 읽힐 수 있어요."
+};
+function rangeLabel(lo,hi){return lo===hi?SCALE[lo-1]:`${SCALE[lo-1]}~${SCALE[hi-1]}`;}
+function hitBlock(k,it,isAmb){
+  const v=S.a1[it.id];const [lo,hi]=it.safe||TYPES[k].safe;
+  const why=k==='VAL'?(it.why||"그럴듯하게 들리지만 CJ 가치와 부딪히는 생각이에요."):TYPE_WHY[k](it);
+  return `<div class="hit2${isAmb?' amb':''}"><p class="hs">${plain(it.s)}${it.tag?`<span class="vtag">${it.tag}</span>`:''}</p>
+    <p class="ha"><span class="mine">내 답 ${SCALE[v-1]}</span><span class="arrow">→</span><span class="rec">권장 ${rangeLabel(lo,hi)}</span></p>
+    <p class="hw">${isAmb?'보통이다는 거부하지 않았다는 신호로 읽혀요. ':''}${why}</p></div>`;
+}
+function trapCard(k,R){
+  const T=TYPES[k],g=R.traps[k];const [lo,hi]=T.safe;
+  const hitN=g.hits.length;const cls=g.n===0?'c-none':hitN===0?'c-good':hitN<=2?'c-mid':'c-bad';
+  const AMB=['VAL','IND','MAL'].includes(k);
+  const cells=[1,2,3,4,5].map(v=>`<span class="${v>=lo&&v<=hi?'safe':(AMB&&v===3?'amb':'')}">${v}</span>`).join('');
+  const counts=g.counts.map((c,i)=>{const v=i+1;const bad=!(v>=lo&&v<=hi)&&!(AMB&&v===3);return `<span class="${bad&&c?'hitc':''}">${c}</span>`;}).join('');
+  const list=g.hits.map(it=>hitBlock(k,it,false)).join('');
+  const amb=g.amb.map(it=>hitBlock(k,it,true)).join('');
+  const custom=k==='ABI'?'<p class="tex">사람을 이용하는 뉘앙스가 강한 문장은 1~3이 안전해요.</p>':'';
+  return `<div class="tcard"><h3>${T.n}<span class="chip ${cls}">${g.n?`${hitN} / ${g.n}개 걸림`:'출제 없음'}</span></h3>
+    <p class="tq"><b>이렇게 구별해요</b>${T.q}</p>
+    <div class="scale5">${cells}</div><div class="counts5">${counts}</div>
+    <div class="scale-cap"><span>매우 아니다</span><span>내가 고른 횟수</span><span>매우 그렇다</span></div>
+    <p class="ttip">${T.tip}</p><p class="tex">예) ${T.ex}</p>${custom}
+    ${list||amb?`<details${k==='VAL'?' open':''}><summary>내가 걸린 문장과 풀이</summary><div class="hits">${list}${amb}</div></details>`:''}
+  </div>`;
+}
+
+
+function eun(w){const c=w.charCodeAt(w.length-1);return (c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28)?'은':'는';}
+function p2Section(R){
+  const tn=t=>TR[t]?TR[t][0]:'';
+  const sorted=Object.keys(TR).filter(t=>R.score[t]!=null).sort((a,b)=>R.score[b]-R.score[a]);const top4=new Set(sorted.slice(0,4));
+  const cnt={};for(const t in TR)cnt[t]={m:0,l:0};
+  const review=[];let negN=0,negHon=0,trapN=0,trapGood=0,trapBad=0;
+  S.p2.forEach((set,si)=>{
+    const a=S.a2[set.id];if(!a||a.m==null||a.l==null)return;
+    const m=set.items[a.m],l=set.items[a.l];
+    if(set.type!=='neg'){if(TR[m.t])cnt[m.t].m++;if(TR[l.t])cnt[l.t].l++;}
+    const notes=[];let level='ok';
+    if(set.type==='neg'){negN++;if(m.t==='HON'){negHon++;level='bad';notes.push("정직과 관련된 약점을 '가'로 골랐어요. 실수를 숨기거나 아는 척하는 약점은 다른 약점보다 훨씬 무겁게 읽혀요. 이 문장은 '멀'로 보내고, 나머지 둘 중 실제로 해당하는 쪽을 '가'로 고르세요.");}}
+    else if(set.type==='trap'){trapN++;if(m.t==='VAL'){trapBad++;level='bad';notes.push("함정 문장을 '가'로 골랐어요. 그럴듯하게 들리지만 CJ 가치와 부딪히는 문장이라 '멀'로 고르는 게 맞아요.");}
+      else if(l.t==='VAL'){trapGood++;}else{level='mid';notes.push("함정 문장을 비워 뒀어요. 크게 문제는 없지만, 함정은 '멀'로 고르는 게 가장 안전해요.");}}
+    else{if(l.t==='HON'||l.t==='CON'){level='mid';notes.push(`'${tn(l.t)}' 문장을 '멀'로 골랐어요. 정직과 책임은 CJ가 가장 기본으로 보는 모습이라 '멀'로 보내지 않는 게 안전해요.`);}
+      else if(top4.has(l.t)){level='mid';notes.push(`'${tn(l.t)}'${eun(tn(l.t))} Part 1에서 높게 답한 성향인데 여기서는 '멀'로 골랐어요. 같은 사람으로 읽히려면 Part 1에서 강하게 답한 성향은 '멀'로 보내지 않는 게 좋아요.`);}}
+    if(level!=='ok')review.push({set,si,m,l,notes,level});
+  });
+  const setLabel={pos:'좋은 말 세트',neg:'약점 세트',trap:'함정 세트'};
+  const setCard=(set,si,a,notes,level)=>`<div class="sc-card ${level}"><div class="sc-h"><span class="sc-type t-${set.type}">${setLabel[set.type]}</span><span class="muted">${si+1}번</span></div>
+    ${set.items.map((it,i)=>{const mk=i===a.m?'<span class="pick m">가</span>':i===a.l?'<span class="pick l">멀</span>':'<span class="pick e"></span>';
+      const tag=it.t==='VAL'?'<span class="itag trap">함정</span>':(set.type==='neg'&&it.t==='HON'?'<span class="itag hon">정직 약점</span>':'');
+      return `<div class="sc-row">${mk}<span>${plain(it.s)}${tag}</span></div>`;}).join('')}
+    ${notes.length?`<p class="sc-note">${notes.join(' ')}</p>`:''}</div>`;
+  const reviewHTML=review.length?review.slice(0,8).map(x=>setCard(x.set,x.si,S.a2[x.set.id],x.notes,x.level)).join(''):'<p class="clean">따로 다시 볼 세트가 없어요. 잘 골랐어요.</p>';
+  const allHTML=S.p2.map((set,si)=>{const a=S.a2[set.id];return a&&a.m!=null?setCard(set,si,a,[],'ok'):'';}).join('');
+  const rows=Object.keys(TR).filter(t=>cnt[t].m||cnt[t].l).sort((a,b)=>(cnt[b].m-cnt[b].l)-(cnt[a].m-cnt[a].l)).map(t=>`<div class="pp-row"><span>${tn(t)}</span><span class="pp-dots">${'<i class="m"></i>'.repeat(cnt[t].m)}${'<i class="l"></i>'.repeat(cnt[t].l)}</span><span class="muted">가 ${cnt[t].m} · 멀 ${cnt[t].l}</span></div>`).join('');
+  const mism=R.mism.map(t=>{const hi=top4.has(t);return `<li><b>${tn(t)}</b>: Part 1에서는 ${hi?'높게':'낮게'} 답했는데(점수 ${R.score[t]}), Part 2에서는 ${hi?"'멀'":"'가'"}로 더 자주 골랐어요. 둘 중 어느 쪽이 진짜 나인지 정해 두면 실전에서 덜 흔들려요.</li>`;}).join('');
+  return `<section class="sheet block"><h2>Part 2 돌아보기</h2>
+    <p class="sec-lead">Part 2는 세 문장 중 나와 가장 가까운 것('가')과 가장 먼 것('멀')을 하나씩 고르는 시험이에요. 회사는 여기서 내가 무엇을 먼저 챙기는 사람인지 봐요. 세트는 세 종류가 섞여 나오고, 종류마다 고르는 요령이 달라요.</p>
+    <div class="howto">
+      <div><span class="sc-type t-pos">좋은 말 세트</span><p>셋 다 좋은 말이에요. 진짜 나와 가장 가까운 걸 '가', 덜 나다운 걸 '멀'로 고르세요. 단, <b>정직하고 책임지는 모습은 '멀'로 보내지 마세요.</b></p></div>
+      <div><span class="sc-type t-neg">약점 세트</span><p>셋 다 약점이에요. '가'는 내가 인정하는 약점이에요. <b>실수를 숨기거나 아는 척하는 정직 약점은 '멀'로</b> 보내고, 일에 덜 치명적인 약점을 '가'로 고르세요.</p></div>
+      <div><span class="sc-type t-trap">함정 세트</span><p>좋은 말 둘 사이에 그럴듯한 함정이 하나 숨어 있어요. <b>함정 문장을 '멀'로</b> 고르면 돼요.</p></div>
+    </div>
+    <div class="pp-sum">
+      <div><b>${negN?`${negN-negHon} / ${negN}`:'-'}</b><span>약점 세트에서 정직 약점을 피한 세트</span></div>
+      <div><b>${trapN?`${trapGood} / ${trapN}`:'-'}</b><span>함정 세트에서 함정을 '멀'로 고른 세트</span></div>
+      <div><b>${review.length}개</b><span>다시 볼 세트</span></div>
+    </div>
+    <p class="sub-h">다시 볼 세트</p>
+    ${reviewHTML}
+    ${mism?`<p class="sub-h" style="margin-top:22px">Part 1과 다르게 고른 성향</p><ul class="mism">${mism}</ul>`:''}
+    <p class="sub-h" style="margin-top:22px">내가 자주 고른 성향</p>
+    <p class="sec-lead" style="margin-top:-8px">좋은 말 세트와 함정 세트에서 '가'(파란 점)와 '멀'(빨간 점)로 고른 횟수예요. 위에 있을수록 회사가 보는 나의 우선순위예요.</p>
+    <div class="pp-list">${rows}</div>
+    <details class="all-sets"><summary>30세트 전체 다시 보기</summary><div style="margin-top:10px">${allHTML}</div></details>
+  </section>`;
+}
+function result(){
+  const R=S.R;
+  const imps=improvements(R);
+  const main=imps.slice(0,5),minor=imps.slice(5);
+  const vCls={good:'v-good',mid:'v-mid',bad:'v-bad'}[R.vCls];
+  const consCls=R.cons>=88?'good':R.cons>=75?'mid':'bad';
+  const relScore=clamp(Math.round(100-R.ocR*250),0,100);
+  const valScore=clamp(100-R.vh*25-R.va*6,0,100);
+  const sharpScore=clamp(Math.round(R.spread*2.5),0,100);
+  const axisCells=R.axes.map(a=>{const d=a.v-a.target;return `<div><b>${a.n}</b><span class="sub">${a.sub}</span><span class="sc">${a.v}<span class="gap" style="color:${d>=0?'var(--ok)':'var(--omr)'}">${d>=0?'+'+d:'−'+Math.abs(d)}</span></span></div>`;}).join('');
+  const impHTML=main.length?main.map((x,i)=>`<div class="imp sev${x.sev}"><span class="rank">${i+1}</span><div><h3>${x.title}</h3><p class="data">${x.data}</p><div class="row"><span>왜</span><span>${x.why}</span></div><div class="row"><span>이렇게</span><span>${x.how}</span></div></div></div>`).join(''):`<p class="clean" style="font-size:15px">크게 고칠 부분이 없어요. 지금 기준 그대로 실전에 들어가면 돼요.</p>`;
+  const minorHTML=minor.length?`<ul class="minor">${minor.map(x=>`<li><b>${x.title}</b>: ${x.data}</li>`).join('')}</ul>`:'';
+  const chips=Object.keys(TR).map(t=>{const g=R.tcons[t];const c=g==null?'c-none':g<=0.5?'c-good':g<1.2?'c-mid':'c-bad';return `<span class="chip ${c}">${TR[t][0]}<small>${g==null?'-':g.toFixed(1)+'칸'}</small></span>`;}).join('');
+  const pcards=R.shaky.slice(0,6).map(x=>{
+    const [A,B]=x.items.slice().sort((p,q)=>p.r-q.r);const vA=S.a1[A.id],vB=S.a1[B.id];
+    const opp=A.r!==B.r;const exp=opp?6-vA:vA;const zone=[Math.max(1,exp-1),Math.min(5,exp+1)];
+    return `<div class="pcard"><div class="ph"><b>${TR[x.t][0]}</b><span class="pd">${x.d}칸 어긋남</span></div>
+      <div class="prow"><span class="ptag">문장 A</span><p class="ptext">${marked(A.s)}</p>${scale5(vA,null)}</div>
+      <div class="rel ${opp?'opp':'same'}">${opp?'⇅ 두 문장은 서로 반대되는 내용이에요. A와 반대로 답해야 일관돼요.':'= 두 문장은 같은 뜻이에요. A와 비슷하게 답해야 일관돼요.'}</div>
+      <div class="prow"><span class="ptag">문장 B</span><p class="ptext">${marked(B.s)}</p>${scale5(vB,zone)}</div>
+      <p class="pexp">A에 <b>${SCALE[vA-1]}</b>로 답했다면, ${opp?'반대 내용인':'같은 뜻인'} B에는 <b class="okc">${SCALE[exp-1]}</b> 근처(초록 칸)로 답해야 같은 사람으로 읽혀요. 이번엔 <b class="badc">${SCALE[vB-1]}</b>로 답해서 ${x.d}칸 어긋났어요.</p></div>`;}).join('');
+  const p2rows=Object.keys(TR).filter(t=>R.app[t]).sort((a,b)=>R.net[b]-R.net[a]).map(t=>{const n=R.net[t];const w=Math.min(Math.abs(n)/6,1)*50;return `<div class="div-row"><span>${TR[t][0]}</span><span class="div-bar"><i class="${n>=0?'pos':'neg'}" style="width:${w}%"></i></span><span class="div-n">${n>0?'+'+n:n<0?'−'+Math.abs(n):'0'}</span></div>`;}).join('');
+  const tp=R.trapPick.length?`<p style="margin-top:14px">좋은 말 사이에 숨은 함정을 '가장 가깝다'로 고른 세트: <b>${R.trapPick.map(i=>plain(i.s)).join(' / ')}</b></p>`:(S.p2.some(s=>s.type==='trap')?`<p class="clean" style="margin-top:14px">좋은 말 사이에 숨은 함정을 한 번도 고르지 않았어요.</p>`:'');
+  const colors=['#C8413B','#E0874A','#9AA3B5','#5E86C4','#233056'];
+  const stack=R.dist.map((n,i)=>{const p=R.answered?n/R.answered*100:0;return p?`<span style="width:${p}%;background:${colors[i]}">${p>=7?Math.round(p)+'%':''}</span>`:'';}).join('');
+  const traitRows=GROUPS.map(g=>`<div class="group"><h3>${g.n}</h3><p class="gdesc">${g.d}</p>${Object.keys(TR).filter(t=>TR[t][1]===g.k).map(t=>{const s=R.score[t];return `<div class="trow"><span>${TR[t][0]}</span><span class="track"><i style="width:${s??0}%"></i></span><span class="tscore">${s??'-'}</span><span></span></div>`;}).join('')}</div>`).join('');
+  return `<div class="wrap" id="report">
+  <section class="sheet">
+    <div class="rep-hero">
+      <div class="hex">${hexSVG(R.axes)}<div class="legend-row"><span><i></i>내 응답</span><span><i class="t"></i>CJ 기준선 (연습용)</span><span>점선 안쪽이면 보완할 곳</span></div></div>
+      <div>
+        <span class="verdict ${vCls}">${R.verdict}</span>
+        <div class="fit-num">${R.fit}<small>/ 100 CJ 적합도</small></div>
+        <p class="fit-sum">${R.vSum}</p>
+        <div class="meters">
+          ${meter('일관성',R.cons,85,R.cons+'%',consCls)}
+          ${meter('솔직함',relScore,75,R.lie,R.lieCls)}
+          ${meter('가치관',valScore,90,R.val,R.valCls)}
+          ${meter('강점 표현',sharpScore,62,R.sharp,R.sharpCls)}
+        </div>
+      </div>
+    </div>
+    <div class="axis-table">${axisCells}</div>
+  </section>
+  <p class="note" style="margin:10px 4px 0">${CFG[S.mode].name}, ${S.dateLabel}. Part 1 ${fmtDur(S.p1End-S.p1Start)}, 미응답 ${R.un1+R.p2un}개.</p>
+
+  <section class="sheet block"><h2>먼저 고칠 것</h2><p class="sec-lead">중요한 순서대로 정리했어요. 빨간 번호부터 보세요.</p>${impHTML}${minorHTML}</section>
+
+  <section class="sheet block"><h2>답이 엇갈린 곳</h2>
+    <p class="sec-lead">시험에는 같은 성향을 표현만 바꿔 두 번 묻는 문항이 숨어 있어요. 두 문장이 같은 뜻이면 비슷하게, 서로 반대되는 내용이면 반대로 답해야 일관돼요. <mark class="kp">형광펜 친 부분</mark>이 두 문장에서 성향을 드러내는 핵심 표현이에요.</p>
+    <p class="sub-h">성향별로 얼마나 흔들렸나</p>
+    <p class="sec-lead" style="margin-top:-10px">짝 문항끼리 평균 몇 칸 어긋났는지예요. 0.5칸 이하는 안정, 1.2칸 이상은 흔들림이에요.</p>
+    <div class="chips">${chips}</div>
+    ${R.shaky.length?`<p class="sub-h">2칸 이상 어긋난 짝 문항</p><div class="sc-legend"><span><i class="me"></i>내 답</span><span><i class="off"></i>일관된 범위를 벗어난 내 답</span><span><i class="z"></i>A 답을 기준으로 일관된 B 답의 범위</span></div>`:''}
+    ${pcards||`<p class="clean">같은 성향을 묻는 짝 문항 ${R.pd.length}쌍에서 2칸 이상 엇갈린 답이 없었어요.</p>`}
+    ${R.shaky.length>6?`<p class="muted" style="font-size:13px;margin-top:10px">2칸 이상 엇갈린 짝이 ${R.shaky.length}쌍 있어요. 차이가 큰 6쌍만 보여 드렸어요.</p>`:''}
+  </section>
+
+  <section class="sheet block"><h2>함정 문장 점검</h2>
+    <p class="sec-lead">함정 문장은 일곱 종류예요. 종류마다 초록 칸이 안전한 답이에요. 칸 아래 숫자는 내가 그 번호를 고른 횟수이고, 빨간 숫자는 함정에 걸린 답이에요.</p>
+    <div class="tgrid">${TYPE_ORDER.map(k=>trapCard(k,R)).join('')}</div>
+    ${R.negHon.length?`<p style="margin-top:16px;font-size:14px"><b>Part 2 약점 세트:</b> 정직 관련 약점을 '가장 가깝다'로 ${R.negHon.length}번 골랐어요. 실제로 해당하는 다른 약점을 인정하는 편이 나아요.</p>`:''}
+  </section>
+
+  ${p2Section(R)}
+
+  <section class="sheet block"><h2>풀이 속도</h2>
+    <p class="sec-lead">한 문항을 읽고 고르는 데 평균 몇 초 걸렸는지 페이지별로 보여 줘요. 빨간 막대는 4초도 안 걸린 페이지예요. 너무 빠르면 함정을 놓치기 쉬워요. 이번 평균은 ${R.avgPer.toFixed(1)}초예요.</p>
+    <div class="speed">${speedSVG(R.per)}</div>
+  </section>
+
+  <section class="sheet block"><h2>내 답의 분포</h2><p class="sec-lead">한쪽으로 너무 쏠리지 않았는지 보세요. '매우 그렇다'가 너무 적으면 강점이 안 보이고, 너무 많으면 과장처럼 보여요.</p>
+    <div class="stack">${stack}</div>
+    <div class="stack-leg">${SCALE.map((s,i)=>`<span><i style="background:${colors[i]}"></i>${s} ${R.dist[i]}</span>`).join('')}</div>
+  </section>
+
+  <section class="sheet block"><details class="more"><summary>13개 성향 자세히</summary><div style="margin-top:16px">${traitRows}</div>
+    <p class="legend">6축 점수는 이 성향 점수를 묶은 뒤 Part 2 선택과 가치 함정 응답을 반영해 계산했어요.</p></details></section>
+
+  <div class="actions no-pdf"><button class="btn" data-act="pdf" ${DLSTATE==='none'?'disabled':''}>결과 PDF로 저장</button><button class="btn ghost" data-act="again">새 문항으로 다시 풀기</button><button class="btn ghost" data-act="home">처음으로</button></div>
+  <p class="note no-pdf" id="pdfmsg">${DLSTATE==='none'?'이 화면에서는 파일 저장을 쓸 수 없어요.':''}</p>
+  <p class="note">CJ 기준선과 핏 점수는 CJ 핵심가치와 행동원칙을 바탕으로 연습용으로 만든 기준이에요. 실제 CJ CFT의 채점 방식과는 달라요.</p>
+  </div>`;
+}
+
+
+/* ---------- PDF 저장 ---------- */
+let DL=null,DLSTATE='pending';
+(async()=>{try{if(window.claude&&typeof window.claude.use==='function'){DL=await window.claude.use('downloads');}else{DL={save:async({filename,data})=>{window.__pdf.save(filename);return {status:'saved'};},native:true};}}catch(e){DL=null;}
+  DLSTATE=DL?'ready':'none';
+  if(S.phase==='result'){const b=document.querySelector('[data-act="pdf"]');const m=document.getElementById('pdfmsg');if(b)b.disabled=!DL;if(m&&!DL)m.textContent='이 화면에서는 파일 저장을 쓸 수 없어요.';}
+})();
+function loadScript(src){return new Promise((res,rej)=>{if(document.querySelector(`script[src="${src}"]`)){res();return;}const s=document.createElement('script');s.src=src;s.onload=()=>res();s.onerror=()=>rej(new Error('load'));document.head.appendChild(s);});}
+async function savePDF(btn){
+  const msg=document.getElementById('pdfmsg');
+  if(!DL){if(msg)msg.textContent='이 화면에서는 파일 저장을 쓸 수 없어요.';return;}
+  const label=btn.textContent;btn.disabled=true;btn.textContent='PDF 만드는 중…';if(msg)msg.textContent='';
+  const html=document.documentElement;const prevTheme=html.getAttribute('data-theme');html.setAttribute('data-theme','light');
+  const root=document.getElementById('report');const closed=[...root.querySelectorAll('details')].filter(d=>!d.open);closed.forEach(d=>d.open=true);
+  try{
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    let cuts=[],rootH=1;
+    const canvas=await window.html2canvas(root,{scale:2,backgroundColor:'#EDF0F4',windowWidth:1000,
+      ignoreElements:el=>el.classList&&el.classList.contains('no-pdf'),
+      onclone:doc=>{const r=doc.getElementById('report');const rt=r.getBoundingClientRect().top;rootH=r.scrollHeight;
+        cuts=[...r.children].filter(ch=>!ch.classList.contains('no-pdf')).map(ch=>ch.getBoundingClientRect().bottom-rt+6);}});
+    const {jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+    const margin=10,iw=210-margin*2,ihMax=297-margin*2;const pxPerMm=canvas.width/iw;const pageH=Math.floor(ihMax*pxPerMm);
+    const k=canvas.height/rootH;const cutPx=cuts.map(x=>Math.round(x*k)).filter(x=>x>0&&x<canvas.height);
+    let y=0,first=true;
+    while(y<canvas.height-4){
+      let end=Math.min(y+pageH,canvas.height);
+      if(end<canvas.height){const ok=cutPx.filter(cp=>cp>y+pageH*0.35&&cp<=y+pageH);if(ok.length)end=Math.max(...ok);}
+      const h=end-y;const c=document.createElement('canvas');c.width=canvas.width;c.height=h;
+      const ctx=c.getContext('2d');ctx.fillStyle='#EDF0F4';ctx.fillRect(0,0,c.width,h);ctx.drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+      if(!first)pdf.addPage();pdf.setFillColor(237,240,244);pdf.rect(0,0,210,297,'F');
+      pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',margin,margin,iw,h/pxPerMm);first=false;y=end;
+    }
+    window.__pdf=pdf;const blob=pdf.output('blob');
+    await DL.save({filename:`CJ_CFT_연습결과_${S.fileDate||'report'}.pdf`,data:blob});
+    if(msg)msg.textContent='PDF를 저장했어요.';
+  }catch(e){
+    if(msg)msg.textContent=(e&&e.code==='declined')?'':(e&&e.message==='load')?'PDF 도구를 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.':'PDF를 만들지 못했어요. 잠시 후 다시 시도해 주세요.';
+  }finally{
+    closed.forEach(d=>d.open=false);if(prevTheme==null)html.removeAttribute('data-theme');else html.setAttribute('data-theme',prevTheme);
+    btn.disabled=false;btn.textContent=label;
+  }
+}
+
+/* ---------- 흐름 ---------- */
+function goPhase(p){S.phase=p;S.quitArmed=false;render();}
+function finishP1(timeout){clearInterval(S.timer);S.p1End=Date.now();S.p1Timeout=!!timeout;
+  if(S.pageStart){const c=CFG[S.mode];const page=S.p1.slice(S.page*c.per,S.page*c.per+c.per);const n=page.filter(it=>S.a1[it.id]!=null).length;if(n)S.pageTimes.push({sec:(Date.now()-S.pageStart)/1000,n});}
+  goPhase('guide2');}
+function finishP2(timeout){
+  clearInterval(S.timer);S.p2End=Date.now();S.p2Timeout=!!timeout;S.R=analyze();
+  const d=new Date();S.dateLabel=`${d.getMonth()+1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  S.fileDate=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+  saveHist({d:S.dateLabel,mode:CFG[S.mode].name,fit:S.R.fit,verdict:S.R.verdict,cons:S.R.cons,lie:S.R.lie,val:S.R.val,p1:fmtDur(S.p1End-S.p1Start)});
+  goPhase('result');
+}
+function refreshP1(){const y=window.scrollY;app.innerHTML=p1();const el=document.getElementById('timer');if(el)el.textContent=fmt(Math.ceil((S.deadline-Date.now())/1000));window.scrollTo(0,y);}
+function refreshP2(){const y=window.scrollY;app.innerHTML=p2();const el=document.getElementById('timer');if(el)el.textContent=fmt(Math.ceil((S.deadline-Date.now())/1000));window.scrollTo(0,y);}
+function nextP1(){const c=CFG[S.mode];const total=Math.ceil(S.p1.length/c.per);const page=S.p1.slice(S.page*c.per,S.page*c.per+c.per);
+  if(!page.every(it=>S.a1[it.id]!=null))return;
+  if(S.page>=total-1){finishP1(false);return;}
+  S.pageTimes.push({sec:(Date.now()-S.pageStart)/1000,n:page.length});S.pageStart=Date.now();
+  S.page++;S.quitArmed=false;refreshP1();window.scrollTo(0,0);}
+function nextP2(){const set=S.p2[S.setIdx];const a=S.a2[set.id]||{};if(a.m==null||a.l==null)return;
+  if(S.setIdx>=S.p2.length-1){finishP2(false);return;}S.setIdx++;S.quitArmed=false;refreshP2();window.scrollTo(0,0);}
+function answerP1(id,v){S.a1[id]=v;refreshP1();const nx=curItemId();if(nx!=null){const el=document.getElementById('q'+nx);if(el){const r=el.getBoundingClientRect();if(r.bottom>window.innerHeight-20)el.scrollIntoView({block:'center'});}}}
+
+app.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.mode){S.mode=b.dataset.mode;render();return;}
+  if(b.dataset.q!=null){answerP1(+b.dataset.q,+b.dataset.v);return;}
+  if(b.dataset.set!=null){const id=+b.dataset.set,k=b.dataset.k,i=+b.dataset.i;const a=S.a2[id]=S.a2[id]||{};a[k]=i;const o=k==='m'?'l':'m';if(a[o]===i)a[o]=null;refreshP2();return;}
+  const act=b.dataset.act;
+  if(act==='pdf'){savePDF(b);return;}
+  if(act==='start'||act==='again'){startPrep();return;}
+  if(act==='skipgen'){b.disabled=true;b.textContent='기본 문항으로 준비하는 중…';try{S.genCtl.abort();}catch(e){}return;}
+  else if(act==='home'){clearInterval(S.timer);goPhase('intro');}
+  else if(act==='go1'){S.p1Start=Date.now();S.pageStart=Date.now();S.phase='p1';render();startTimer(CFG[S.mode].p1t,CFG[S.mode].low1,finishP1);}
+  else if(act==='go2'){S.p2Start=Date.now();S.phase='p2';render();startTimer(CFG[S.mode].p2t,CFG[S.mode].low2,finishP2);}
+  else if(act==='next1')nextP1();
+  else if(act==='next2')nextP2();
+  else if(act==='quit'){
+    if(S.quitArmed){clearInterval(S.timer);goPhase('intro');}
+    else{S.quitArmed=true;b.classList.add('armed');b.textContent='한 번 더 누르면 종료';clearTimeout(S.qt);S.qt=setTimeout(()=>{S.quitArmed=false;const q=document.querySelector('.quit');if(q){q.classList.remove('armed');q.textContent='그만두기';}},3000);}
+  }
+});
+document.addEventListener('keydown',e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(S.phase==='p1'){if(/^[1-5]$/.test(e.key)){const id=curItemId();if(id!=null){e.preventDefault();answerP1(id,+e.key);}}else if(e.key==='Enter'){e.preventDefault();nextP1();}}
+  else if(S.phase==='p2'&&e.key==='Enter'){e.preventDefault();nextP2();}
+});
+window.addEventListener('beforeunload',e=>{if(S.phase==='p1'||S.phase==='p2'){e.preventDefault();e.returnValue='';}});
+render();
+</script>
+</body>
+</html>
