@@ -308,6 +308,7 @@ mark.kp{background:linear-gradient(transparent 55%,var(--hl) 55%);color:inherit;
 .rel{margin:12px 0 12px 64px;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;background:var(--bar-bg);color:var(--ink)}
 .rel.opp{border-left:3px solid var(--warn)} .rel.same{border-left:3px solid var(--bar)}
 .pexp{font-size:14px;margin:12px 0 0;padding-top:12px;border-top:1px dashed var(--rule)}
+.pexp.cj{border-top:0;padding-top:0;margin-top:6px;color:var(--muted)}
 .okc{color:var(--ok)} .badc{color:var(--omr)}
 @media (max-width:640px){
   .prow{grid-template-columns:1fr}.prow .sc5{grid-column:1}.rel{margin-left:0}
@@ -350,6 +351,11 @@ mark.kp{background:linear-gradient(transparent 55%,var(--hl) 55%);color:inherit;
 :root[data-theme="dark"] .pp-dots i.m,:root[data-theme="dark"] .pick.m{background:var(--bar)}
 .all-sets summary{cursor:pointer;font-weight:600;margin-top:18px;color:var(--muted)}
 @media (max-width:720px){.howto,.pp-sum{grid-template-columns:1fr}}
+summary{display:block;list-style:none;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+summary::marker{content:''}
+.tcard summary::before,.all-sets summary::before{content:'▸ ';}
+.tcard details[open] summary::before,.all-sets[open] summary::before{content:'▾ ';}
 </style>
 </head>
 <body>
@@ -408,8 +414,8 @@ const HUM=["다른 사람의 실수담을 듣고 웃음이 날 때가 있다.","
 // 적응 척도: 피해의식, 충동, 공격성, 불안 등
 const MAL=["사람들이 뒤에서 내 이야기를 한다고 느낄 때가 많다.","다른 사람의 호의에도 숨은 의도가 있다고 생각하게 된다.","화가 나면 참지 못하고 바로 말해 버린다.","사고 싶은 게 생기면 계획에 없어도 바로 산다.","이유 없이 기분이 가라앉는 날이 잦다.","남들보다 억울한 일을 많이 당한다고 생각한다.","규칙은 걸리지만 않으면 어겨도 된다고 생각한다.","일이 잘못되면 대부분 다른 사람 때문이라고 느낀다.","사소한 일에도 쉽게 짜증이 난다.","다른 사람이 잘되면 내가 손해 보는 기분이 든다.","한번 서운했던 일은 오래 기억해 둔다.","위험한 상황에서 짜릿함을 느낀다.","나를 무시한 사람에게는 똑같이 갚아 준다.","걱정 때문에 일을 시작하지 못할 때가 많다.","사람들이 나를 제대로 이해하지 못한다고 느낀다.","마음에 안 드는 지시는 일부러 늦게 처리한 적이 있다.","기분에 따라 일하는 속도가 크게 달라진다.","사람들 앞에서 망신당할까 봐 자주 걱정된다.","내가 손해 본다고 느끼면 협조하고 싶지 않다.","큰소리로 따지면 결국 원하는 걸 얻을 수 있다."];
 const VAL=[["업무 속도를 위해 결재 절차를 일부 건너뛰는 것도 융통성이다.", "정직", "절차를 건너뛰는 걸 '융통성'으로 포장한 문장이에요. 정직은 정해진 절차를 지키는 데서 시작해요."], ["보고서 숫자는 조금 보기 좋게 반올림해도 문제없다.", "정직", "작은 숫자라도 보기 좋게 바꾸는 건 보고를 왜곡하는 거예요. 정직 문항의 가장 기본적인 함정이에요."], ["동료의 실수를 상사에게 알리는 것은 고자질에 가깝다.", "정직", "실수를 드러내는 걸 '고자질'로 보는 생각에 동의하는지 묻는 문장이에요. 동의하면 문제를 덮는 쪽으로 읽혀요."], ["업무 시간에 개인 용무를 잠깐 보는 정도는 괜찮다.", "정직", "작은 일이라도 근무 원칙을 느슨하게 보는 태도로 읽혀요."], ["거래처에서 받은 작은 선물은 개인적으로 가져도 된다.", "정직", "윤리 경영과 바로 연결되는 문장이라 회사가 가장 민감하게 봐요. 매우 아니다가 안전해요."], ["다른 팀 자료를 출처 없이 써도 결과가 좋으면 괜찮다.", "정직", "남의 결과물을 내 것처럼 쓰는 건 결과가 좋아도 정직 문제예요."], ["문제가 생겨도 일정에 영향이 없으면 굳이 보고하지 않아도 된다.", "정직", "문제를 숨기는 것을 효율로 포장한 문장이에요."], ["상사가 원하는 방향으로 데이터를 해석해 주는 것도 능력이다.", "정직", "윗사람 입맛에 맞게 데이터를 해석하는 건 능력이 아니라 왜곡이에요."], ["경비 처리는 조금 넉넉하게 하는 것이 관행이다.", "정직", "'관행'이라는 말로 부정을 정당화하는 문장이에요."], ["고객이 묻지 않은 단점까지 설명할 필요는 없다.", "정직", "고객에게 불리한 정보를 감추는 쪽이라 정직과 고객 신뢰 둘 다에 걸려요."], ["결국 직급이 높은 사람의 의견이 옳은 경우가 많다.", "존중", "의견의 가치를 직급으로 판단하는 생각이에요. 존중은 연차나 직급과 상관없이 의견을 대하는 태도예요."], ["신입 사원은 일단 시키는 일부터 하는 게 맞다.", "존중", "현실적으로 들리지만 신입을 의견 없는 실행자로 보는 문장이에요. 강하게 동의하면 수직적인 사람으로 읽혀요. 보통이다까지는 무난해요."], ["일을 못하는 동료와는 거리를 두는 것이 현명하다.", "존중", "동료를 성과로만 평가하고 배제하는 태도라 존중과 부딪혀요."], ["회의에서는 결정권자의 의견에 먼저 맞추는 것이 효율적이다.", "존중", "효율을 앞세웠지만 결국 힘 있는 사람에게 맞추는 태도예요."], ["아랫사람에게는 조금 강하게 말해야 일이 된다.", "존중", "위계로 일을 밀어붙이는 태도라 존중과 부딪혀요."], ["조직에서 살아남으려면 누구와 친해야 하는지 알아야 한다.", "존중", "일보다 관계의 힘을 기준으로 움직이는 정치적인 태도로 읽혀요."], ["나이가 어린 상사에게 지시받는 것은 불편하다.", "존중", "나이를 기준으로 상대를 대하는 태도라 존중 문항에서 걸려요."], ["거래에서는 상대가 손해를 보더라도 우리 이익을 최대한 챙겨야 한다.", "상생", "상대를 이겨야 할 대상으로만 보는 생각이라 함께 성장하는 상생과 반대예요."], ["우리 팀 실적이 우선이니 다른 팀 요청은 뒤로 미뤄도 된다.", "상생", "부서 이기주의로 읽혀요. 상생은 조직 안의 협력도 포함해요."], ["경쟁사를 깎아내리는 홍보도 효과가 있다면 해 볼 만하다.", "상생", "효과를 이유로 공정하지 않은 방법을 허용하는 생각이에요."], ["고객 불만은 목소리가 큰 고객부터 처리하는 것이 효율적이다.", "상생", "고객을 공정하게 대하지 않는 태도라 고객 신뢰와 상생에 걸려요."], ["지역 사회나 환경 문제는 회사가 신경 쓸 일이 아니다.", "상생", "기업의 사회적 책임과 공유가치를 강조하는 CJ 가치와 정면으로 부딪혀요."], ["내 성과가 드러나지 않는 협업에는 힘을 덜 쓰게 된다.", "상생", "공이 보이는 일만 하겠다는 뜻이라 협력과 상생에서 걸려요."], ["업계 평균만 해도 충분히 잘하고 있는 것이다.", "ONLYONE", "최고를 지향하는 ONLYONE과 반대되는 현상 유지 태도예요. 보통이다까지는 무난해요."], ["이미 성공한 방식을 따라 하는 것이 가장 안전한 전략이다.", "ONLYONE", "안전해 보이지만 남이 한 걸 따라가는 전략이라 최초·차별화와 부딪혀요. 보통이다까지는 무난해요."], ["실패할 수도 있는 기획은 처음부터 제안하지 않는 게 낫다.", "ONLYONE", "실패를 피하려고 처음부터 도전하지 않는 태도예요."], ["1등이 어렵다면 무리해서 경쟁할 필요는 없다.", "ONLYONE", "ONLYONE의 '최고' 지향과 정반대인 생각이에요."], ["새로운 시도는 윗선에서 지시가 내려올 때 하면 된다.", "ONLYONE", "스스로 먼저 움직이지 않는 수동적인 태도로 읽혀요."], ["지금 잘 팔리는 상품이라면 굳이 바꿀 이유가 없다.", "ONLYONE", "현재에 안주하는 생각이라 차별화와 부딪혀요. 보통이다까지는 무난해요."], ["남들이 하지 않는 일에는 다 이유가 있다.", "ONLYONE", "새로운 시도를 처음부터 의심하는 태도예요. '최초'를 강조하는 ONLYONE과 맞지 않아요. 보통이다까지는 무난해요."], ["목표는 확실히 달성할 수 있는 수준으로 잡는 게 좋다.", "ONLYONE", "안정적으로 들리지만 높은 목표에 도전하지 않겠다는 뜻이에요. 매우 그렇다는 특히 불리해요. 보통이다까지는 무난해요."], ["정해진 업무만 잘해도 회사에 충분히 기여하는 것이다.", "ONLYONE", "주어진 일 이상은 하지 않겠다는 태도라 ONLYONE, 주인의식과 부딪혀요."]];
-const TWO=[["실수해도 크게 신경 쓰지 않는 편이다.","정서 안정","책임감 부족"],["한번 정한 방식은 웬만해선 바꾸지 않는다.","일관성","변화 거부"],["남의 평가보다 내 기준이 더 중요하다.","주관","피드백 거부"],["일이 많아도 남에게 넘기지 않고 혼자 해결한다.","책임감","협업 부족"],["상사의 지시라면 이유를 묻지 않고 따른다.","성실","원칙 없음"],["분위기를 깨지 않으려고 반대 의견을 삼킨다.","배려","정직 부족"],["완벽해질 때까지 결과물을 공개하지 않는다.","꼼꼼함","실행력 부족"],["결정이 빨라서 다른 사람 의견을 길게 듣지 않는다.","실행력","존중 부족"],["감정을 거의 드러내지 않는다.","침착함","소통 부족"],["경쟁에서 지면 잠이 안 올 만큼 분하다.","승부욕","정서 불안"],["계획에 없던 일은 웬만하면 맡지 않는다.","계획성","유연성 부족"],["규칙에 어긋나면 사소한 것도 바로 지적한다.","원칙","존중 부족"],["일은 빨리 끝내는 것이 가장 중요하다.","실행력","품질 소홀"],["새로운 일이 생기면 하던 일을 멈추고 뛰어든다.","도전","책임감 부족"],["내가 옳다고 생각하면 끝까지 설득한다.","주도성","고집"],["팀을 위해서라면 개인 시간은 언제든 포기한다.","헌신","과장"],["남에게 부탁하느니 밤을 새우는 게 낫다.","책임감","협업 부족"],["사람들 기분을 맞추는 데 시간을 많이 쓴다.","배려","효율 부족"],["확실한 근거가 없으면 의견을 말하지 않는다.","신중함","소극성"],["한 가지에 빠지면 다른 일은 잊어버린다.","몰입","책임감 부족"],["누가 도와 달라고 하면 내 일을 미루고라도 돕는다.","협조성","우선순위 부족"],["손해를 보더라도 갈등은 피하는 게 낫다.","원만함","소극성"]];
-const ABI=[["어디서든 사람들 사이의 관계 구도를 빨리 읽는다.",2,4],["상대가 듣고 싶어 하는 말을 금방 알아챈다.",2,4],["윗사람의 기분 변화를 누구보다 빨리 알아챈다.",2,4],["누구에게 먼저 말해야 일이 풀리는지 안다.",2,4],["협상할 때 상대의 약한 부분이 잘 보인다.",2,4],["회의 분위기를 보고 말할 타이밍을 잡는다.",2,4],["처음 간 조직에서도 누가 결정권자인지 금방 알아본다.",2,4],["사람을 만나면 나에게 도움이 될지 빨리 판단이 선다.",1,3],["상대의 말에서 숨은 의도를 잘 찾아낸다.",2,4],["원하는 것을 얻으려고 상대에 맞춰 말을 바꾸는 데 능숙하다.",1,3],["회식 자리에서 누가 누구와 가까운지 금방 파악된다.",2,4],["상황에 따라 다른 모습을 보여 주는 데 능숙하다.",1,3]];
+const TWO=[["실수해도 크게 신경 쓰지 않는 편이다.", "정서 안정", "책임감 부족", 1], ["한번 정한 방식은 웬만해선 바꾸지 않는다.", "일관성", "변화 거부", 1], ["남의 평가보다 내 기준이 더 중요하다.", "주관", "피드백 거부", 0], ["일이 많아도 남에게 넘기지 않고 혼자 해결한다.", "책임감", "협업 부족", 0], ["상사의 지시라면 이유를 묻지 않고 따른다.", "성실", "원칙 없음", 1], ["분위기를 깨지 않으려고 반대 의견을 삼킨다.", "배려", "정직 부족", 1], ["완벽해질 때까지 결과물을 공개하지 않는다.", "꼼꼼함", "실행력 부족", 1], ["결정이 빨라서 다른 사람 의견을 길게 듣지 않는다.", "실행력", "존중 부족", 1], ["감정을 거의 드러내지 않는다.", "침착함", "소통 부족", 0], ["경쟁에서 지면 잠이 안 올 만큼 분하다.", "승부욕", "정서 불안", 0], ["계획에 없던 일은 웬만하면 맡지 않는다.", "계획성", "유연성 부족", 1], ["규칙에 어긋나면 사소한 것도 바로 지적한다.", "원칙", "존중 부족", 0], ["일은 빨리 끝내는 것이 가장 중요하다.", "실행력", "품질 소홀", 0], ["새로운 일이 생기면 하던 일을 멈추고 뛰어든다.", "도전", "책임감 부족", 0], ["내가 옳다고 생각하면 끝까지 설득한다.", "주도성", "고집", 0], ["팀을 위해서라면 개인 시간은 언제든 포기한다.", "헌신", "과장", 0], ["남에게 부탁하느니 밤을 새우는 게 낫다.", "책임감", "협업 부족", 0], ["사람들 기분을 맞추는 데 시간을 많이 쓴다.", "배려", "효율 부족", 0], ["확실한 근거가 없으면 의견을 말하지 않는다.", "신중함", "소극성", 0], ["한 가지에 빠지면 다른 일은 잊어버린다.", "몰입", "책임감 부족", 1], ["누가 도와 달라고 하면 내 일을 미루고라도 돕는다.", "협조성", "우선순위 부족", 0], ["손해를 보더라도 갈등은 피하는 게 낫다.", "원만함", "소극성", 0]];
+const ABI=[["어디서든 사람들 사이의 관계 구도를 빨리 읽는다.",1,4],["상대가 듣고 싶어 하는 말을 금방 알아챈다.",1,4],["윗사람의 기분 변화를 누구보다 빨리 알아챈다.",1,4],["누구에게 먼저 말해야 일이 풀리는지 안다.",1,4],["협상할 때 상대의 약한 부분이 잘 보인다.",1,4],["회의 분위기를 보고 말할 타이밍을 잡는다.",1,4],["처음 간 조직에서도 누가 결정권자인지 금방 알아본다.",1,4],["사람을 만나면 나에게 도움이 될지 빨리 판단이 선다.",1,3],["상대의 말에서 숨은 의도를 잘 찾아낸다.",1,4],["원하는 것을 얻으려고 상대에 맞춰 말을 바꾸는 데 능숙하다.",1,3],["회식 자리에서 누가 누구와 가까운지 금방 파악된다.",1,4],["상황에 따라 다른 모습을 보여 주는 데 능숙하다.",1,3]];
 
 /* ---------- Part 2 문장 풀 ---------- */
 const P2POS={
@@ -454,12 +460,12 @@ const AXES=[
 ];
 const TYPES={
   VAL:{n:'가치 함정',q:'현실적이고 일 잘하는 사람의 말처럼 들리는데, 정직·존중·상생·ONLYONE과 부딪히나?',safe:[1,2],tip:'아니다 쪽으로 분명하게. 보통이다는 거부하지 않았다는 신호로 읽혀요.',ex:'보고서 숫자는 조금 보기 좋게 반올림해도 문제없다.'},
-  ABS:{n:'절대 표현',q:"좋은 말에 '전혀', '한 번도', '언제나'가 붙었나?",safe:[1,3],tip:'사실상 아무도 해당하지 않아요. 그렇다 이상이면 과장으로 읽혀요.',ex:'약속에 늦어 본 적이 단 한 번도 없다.'},
+  ABS:{n:'절대 표현',q:"'한 번도 ~한 적이 없다', '전혀', '언제나'처럼 예외를 인정하지 않는 말인가?",safe:[1,3],tip:'사실상 아무도 해당하지 않는 말이에요. 그렇다 이상이면 과장으로 읽혀요.',ex:'약속에 늦어 본 적이 단 한 번도 없다.'},
   HUM:{n:'누구나 겪는 일',q:'사람이라면 한 번쯤 겪는 일인가?',safe:[3,5],tip:'인정하는 쪽이 신뢰를 줘요. 아니다는 약점을 감추는 것으로 읽혀요.',ex:'내키지 않는 모임에 핑계를 대고 빠진 적이 있다.'},
-  MAL:{n:'적응 척도',q:'피해의식, 충동, 공격성, 지나친 불안을 묻는 문장인가?',safe:[1,2],tip:'대부분의 사람은 아니다에 가까워요. 일시적인 기분이 아니라 평소 모습으로 답하세요. 실제로 그렇다면 솔직하게 답하는 게 맞아요.',ex:'사람들이 뒤에서 내 이야기를 한다고 느낄 때가 많다.'},
-  TWO:{n:'두 얼굴 문장',q:'한쪽으로는 장점인데 다른 쪽으로는 단점인가?',safe:[2,4],tip:'극단(1, 5)을 피하고 기준 문장으로 답해요.',ex:'남의 평가보다 내 기준이 더 중요하다.'},
-  IND:{n:'돌려 묻는 문장',q:'남이 보는 나를 묻는다면, 좋은 평판인가 나쁜 평판인가?',safe:[1,2],tip:'나쁜 평판을 담은 문장은 따뜻하게 들려도 아니다 쪽이에요.',ex:'주변에서 내 일이 잘되고 있는지 걱정스럽게 묻는 경우가 많다.'},
-  ABI:{n:'능력과 가치 사이',q:"'~할 수 있다'(능력)인가, '~가 중요하다'(가치)인가?",safe:[2,4],tip:'능력 문장도 매우 그렇다는 정치적으로 읽힐 수 있어요. 그렇다까지가 안전해요.',ex:'어디서든 사람들 사이의 관계 구도를 빨리 읽는다.'}
+  MAL:{n:'적응 척도',q:'피해의식, 충동, 공격성, 지나친 불안을 묻는 문장인가?',safe:[1,3],tip:'대부분의 사람은 아니다에 가까워요. 그렇다 이상이 여러 개면 조직 적응에 대한 걱정으로 읽혀요. 그날 기분이 아니라 평소 모습으로 답하세요.',ex:'사람들이 뒤에서 내 이야기를 한다고 느낄 때가 많다.'},
+  TWO:{n:'두 얼굴 문장',q:'한쪽으로는 장점인데 다른 쪽으로는 단점인가?',safe:[2,4],tip:'문장마다 안전한 범위가 달라요. 단점이 더 크게 읽히는 문장은 그렇다부터, 장단점이 비슷한 문장은 양 끝(1, 5)이 위험해요.',ex:'남의 평가보다 내 기준이 더 중요하다.'},
+  IND:{n:'돌려 묻는 문장',q:'남이 보는 나를 묻는다면, 좋은 평판인가 나쁜 평판인가?',safe:[1,3],tip:'나쁜 평판을 담은 문장에 그렇다로 답하면 그 평판을 스스로 인정하는 셈이에요.',ex:'주변에서 내 일이 잘되고 있는지 걱정스럽게 묻는 경우가 많다.'},
+  ABI:{n:'능력과 가치 사이',q:"'~할 수 있다'(능력)인가, '~가 중요하다'(가치)인가?",safe:[1,4],tip:'능력 문장도 매우 그렇다는 정치적으로 읽힐 수 있어요. 그렇다까지가 안전해요.',ex:'어디서든 사람들 사이의 관계 구도를 빨리 읽는다.'}
 };
 const TYPE_ORDER=['VAL','ABS','HUM','MAL','TWO','IND','ABI'];
 const CFG={
@@ -491,7 +497,7 @@ const BANKPOOL={
   HUM:()=>HUM.map(s=>({k:'HUM',s})),
   MAL:()=>MAL.map(s=>({k:'MAL',s})),
   VAL:()=>VAL.map(([s,tag,why])=>({k:'VAL',s,tag,why})),
-  TWO:()=>TWO.map(([s,good,bad])=>({k:'TWO',s,good,bad})),
+  TWO:()=>TWO.map(([s,good,bad,hi])=>({k:'TWO',s,good,bad,safe:hi?[1,3]:[2,4]})),
   ABI:()=>ABI.map(([s,lo,hi])=>({k:'ABI',s,safe:[lo,hi]})),
   INDN:()=>IND.filter(x=>x[1]<0).map(([t,d,s])=>({k:'IND',t,r:true,s})),
   INDP:()=>IND.filter(x=>x[1]>0).map(([t,d,s])=>({k:'INDP',t,r:false,s}))
@@ -589,10 +595,10 @@ function promptTraps(seeds,avoid){
 - ABS 8개: 좋은 말에 '전혀', '한 번도', '언제나', '단 한 번도' 같은 절대 표현이 붙어 사실상 아무도 해당하지 않는 문장.
 - HUM 8개: 사람이라면 누구나 한 번쯤 겪는 사소한 약점이나 감정(예: 가끔 일을 미루고 싶다). 아니라고 답하면 과장이 되는 문장.
 - MAL 8개: 피해의식, 충동성, 공격성, 지나친 불안, 냉소를 묻는 적응 척도 문장.
-- TWO 8개: 한쪽으로 보면 장점, 다른 쪽으로 보면 단점인 문장. good과 bad에 각각 짧게.
+- TWO 8개: 한쪽으로 보면 장점, 다른 쪽으로 보면 단점인 문장. good과 bad에 각각 짧게. 그렇다로 답할 때 단점이 더 크게 읽히면 risk를 "high", 양쪽이 비슷하면 "both".
 - IND 10개: 다른 사람이 나를 어떻게 보는지 묻는 문장. 따뜻하게 들려도 사실은 나쁜 평판인 것(dir "-")과 좋은 평판(dir "+")을 섞어. t는 관련 성향 코드(EXE,CHG,CRE,LEA,CON,PLN,GRO,EMO,COL,CUS,HON,COM,GLO).
 - ABI 5개: 관계 구도나 상대 의도를 읽는 능력을 묻는 문장. 사람을 이용하는 뉘앙스가 강하면 hi를 3, 아니면 4로.
-JSON으로만 답해: {"VAL":[{"s":"...","tag":"정직","why":"..."}],"ABS":["..."],"HUM":["..."],"MAL":["..."],"TWO":[{"s":"...","good":"...","bad":"..."}],"IND":[{"t":"CON","dir":"-","s":"..."}],"ABI":[{"s":"...","hi":4}]}`;
+JSON으로만 답해: {"VAL":[{"s":"...","tag":"정직","why":"..."}],"ABS":["..."],"HUM":["..."],"MAL":["..."],"TWO":[{"s":"...","good":"...","bad":"...","risk":"both"}],"IND":[{"t":"CON","dir":"-","s":"..."}],"ABI":[{"s":"...","hi":4}]}`;
 }
 function promptP2(seeds,avoid){
   return styleGuide(seeds,avoid)+`
@@ -620,9 +626,9 @@ function cleanTraps(j){
   const o={VAL:[],ABS:[],HUM:[],MAL:[],TWO:[],INDN:[],INDP:[],ABI:[]};if(!j)return o;
   (j.VAL||[]).forEach(x=>{if(x&&okText(x.s,8,70)&&TAGS.includes(x.tag))o.VAL.push({k:'VAL',s:esc(x.s),tag:x.tag,why:typeof x.why==='string'?esc(x.why.slice(0,140)):''});});
   ['ABS','HUM','MAL'].forEach(k=>(j[k]||[]).forEach(s=>{if(okText(s,8,70))o[k].push({k,s:esc(s)});}));
-  (j.TWO||[]).forEach(x=>{if(x&&okText(x.s,8,70))o.TWO.push({k:'TWO',s:esc(x.s),good:esc(x.good||''),bad:esc(x.bad||'')});});
+  (j.TWO||[]).forEach(x=>{if(x&&okText(x.s,8,70))o.TWO.push({k:'TWO',s:esc(x.s),good:esc(x.good||''),bad:esc(x.bad||''),safe:x.risk==='high'?[1,3]:[2,4]});});
   (j.IND||[]).forEach(x=>{if(x&&TR[x.t]&&okText(x.s,8,70)){if(x.dir==='-')o.INDN.push({k:'IND',t:x.t,r:true,s:esc(x.s)});else o.INDP.push({k:'INDP',t:x.t,r:false,s:esc(x.s)});}});
-  (j.ABI||[]).forEach(x=>{if(x&&okText(x.s,8,70))o.ABI.push({k:'ABI',s:esc(x.s),safe:[x.hi===3?1:2,x.hi===3?3:4]});});
+  (j.ABI||[]).forEach(x=>{if(x&&okText(x.s,8,70))o.ABI.push({k:'ABI',s:esc(x.s),safe:[1,x.hi===3?3:4]});});
   return o;
 }
 function cleanP2(j){
@@ -787,7 +793,7 @@ function trapStatus(it,v){
   const [lo,hi]=it.safe||TYPES[it.k].safe;
   if(v>=lo&&v<=hi)return 'ok';
   if(it.k==='VAL'&&v===3)return 'amb';
-  if((it.k==='IND'||it.k==='MAL')&&v===3)return 'amb';
+
   return 'hit';
 }
 function analyze(){
@@ -826,7 +832,7 @@ function analyze(){
   // 선명도
   const vals=Object.values(score).filter(x=>x!=null);const spread=vals.length?Math.max(...vals)-Math.min(...vals):0;
   const strong=answered?dist[4]/answered:0;
-  let sharp,sharpCls;if(spread>=25){sharp='잘 보여요';sharpCls='good';}else if(spread>=15){sharp='보통';sharpCls='mid';}else{sharp='안 보여요';sharpCls='bad';}
+  let sharp,sharpCls;if(spread>=25&&strong>=0.08){sharp='잘 보여요';sharpCls='good';}else if(spread>=15){sharp='보통';sharpCls='mid';}else{sharp='안 보여요';sharpCls='bad';}
   // 6축
   const axes=AXES.map(ax=>{
     const ts=ax.traits.map(t=>score[t]).filter(x=>x!=null);let base=ts.length?ts.reduce((a,b)=>a+b,0)/ts.length:0;
@@ -834,7 +840,7 @@ function analyze(){
     let pen=0;
     if(ax.tag){pen+=traps.VAL.hits.filter(i=>i.tag===ax.tag).length*6+traps.VAL.amb.filter(i=>i.tag===ax.tag).length*2+trapPick.filter(i=>i.tag===ax.tag).length*5;}
     if(ax.k==='HON')pen+=negHon.length*4;
-    if(ax.k==='DUT')pen+=traps.MAL.hits.length*4+traps.MAL.amb.length;
+    if(ax.k==='DUT')pen+=traps.MAL.hits.length*4;
     const v=Math.round(clamp(base+p2-pen,0,100));
     return Object.assign({},ax,{v,base:Math.round(base),p2,pen});
   });
@@ -844,12 +850,12 @@ function analyze(){
   if(cons<85)fit-=(85-cons)*0.5;
   fit-=Math.min(vh*3,15);
   fit=Math.round(clamp(fit,0,100));
-  const honAx=axes.find(a=>a.k==='HON');
+  const honAx=axes.find(a=>a.k==='HON');const below=axes.filter(a=>a.v<a.target);const belowTxt=below.map(a=>a.n).join(', ');
   let verdict,vCls,vSum;
   if(honAx.v<60||vh>=3||lieCls==='bad'){verdict='걸러질 수 있어요';vCls='bad';vSum='정직이나 가치관을 묻는 문장, 또는 과장된 답에서 탈락 신호가 보여요. 아래 1번부터 고쳐 보세요.';}
-  else if(fit>=90){verdict='CJ와 잘 맞아요';vCls='good';vSum='CJ 기준선을 대부분 넘었고 함정에도 거의 안 걸렸어요. 실전에서도 지금처럼 답하면 돼요.';}
-  else if(fit>=78){verdict='조금만 다듬으면 돼요';vCls='mid';vSum='큰 방향은 CJ와 맞아요. 아래 고칠 점 몇 개만 다듬으면 돼요.';}
-  else{verdict='아직 거리가 있어요';vCls='bad';vSum='CJ 기준선보다 안쪽으로 들어간 항목이 여럿이에요. 아래 고칠 점을 순서대로 보세요.';}
+  else if(fit>=90&&below.length<=1){verdict='CJ와 잘 맞아요';vCls='good';vSum=below.length?`6개 항목 중 ${belowTxt}만 기준선보다 조금 낮고, 함정에도 거의 안 걸렸어요. 실전에서도 지금처럼 답하면 돼요.`:'6개 항목 모두 기준선을 넘었고 함정에도 거의 안 걸렸어요. 실전에서도 지금처럼 답하면 돼요.';}
+  else if(fit>=78){verdict='조금만 다듬으면 돼요';vCls='mid';vSum=`큰 방향은 CJ와 맞아요. 다만 ${belowTxt||'일부 항목'}이 기준선보다 낮아요. 아래 고칠 점부터 보세요.`;}
+  else{verdict='아직 거리가 있어요';vCls='bad';vSum=`${belowTxt}이 기준선보다 안쪽에 있어요. 아래 고칠 점을 순서대로 보세요.`;}
   // 속도
   const per=S.pageTimes.map(x=>x.sec/x.n);
   const avgPer=S.p1.length?(S.p1End-S.p1Start)/1000/Math.max(answered,1):0;
@@ -871,15 +877,15 @@ function improvements(R){
   if(hon.v<hon.target)L.push({sev:hon.v<60?3:2,title:'정직 축이 기준선보다 낮아요',data:`정직 ${hon.v}점 (기준선 ${hon.target})`,why:'CJ 행동원칙의 첫 번째가 정직이에요. 다른 축보다 먼저 채워야 해요.',how:'실수, 보고, 원칙을 묻는 문장은 분명하게 답하고, 반대 방향 문장에서 보통이다를 피하세요.'});
   if(R.cons<85){const w=Object.keys(R.tcons).filter(t=>R.tcons[t]!=null&&R.tcons[t]>=1).sort((a,b)=>R.tcons[b]-R.tcons[a]).slice(0,3).map(tn);
     L.push({sev:R.cons<75?3:2,title:'같은 성향에 대한 답이 엇갈렸어요',data:`일관성 ${R.cons}%${w.length?`, 흔들린 영역: ${w.join(', ')}`:''}`,why:'응답이 엇갈리면 결과 자체를 믿기 어려워서 해석 전에 걸러질 수 있어요.',how:'흔들린 영역마다 기준 문장 하나를 정해 두고, 반대 방향 문장은 부정어에서 한 번 멈추세요.'});}
-  if(R.traps.MAL.hits.length>=2)L.push({sev:R.traps.MAL.hits.length>=4?3:2,title:'적응 척도 문장에 그렇다 이상으로 답했어요',data:`${R.traps.MAL.hits.length}개, 보통이다 ${R.traps.MAL.amb.length}개`,why:'피해의식, 충동, 공격성, 지나친 불안을 거르는 문장이에요. 여러 개가 겹치면 조직 적응에 대한 우려로 읽힐 수 있어요.',how:'그날 기분이 아니라 평소 모습으로 답하세요. 실제로 해당하지 않는다면 아니다로 분명히 하면 돼요.'});
+  if(R.traps.MAL.hits.length>=2)L.push({sev:R.traps.MAL.hits.length>=4?3:2,title:'적응 척도 문장에 그렇다 이상으로 답했어요',data:`${R.traps.MAL.hits.length}개`,why:'피해의식, 충동, 공격성, 지나친 불안을 거르는 문장이에요. 여러 개가 겹치면 조직 적응에 대한 우려로 읽힐 수 있어요.',how:'그날 기분이 아니라 평소 모습으로 답하세요. 실제로 해당하지 않는다면 아니다로 분명히 하면 돼요.'});
   if(R.traps.TWO.hits.length>=2)L.push({sev:2,title:'두 얼굴 문장에 극단으로 답했어요',data:`${R.traps.TWO.hits.length}개 문장에 1 또는 5`,why:'한쪽으로 장점인 문장도 다른 쪽에서 단점으로 채점될 수 있어요.',how:'장점과 단점이 같이 보이면 2~4 사이에서 기준 문장대로 답하세요.'});
-  if(R.traps.IND.hits.length)L.push({sev:2,title:'나쁜 평판을 담은 문장에 동의했어요',data:`${R.traps.IND.hits.length}개`,why:"'주변에서 걱정해 준다', '한 번 더 확인한다'는 따뜻하게 들려도 신뢰가 낮다는 뜻이에요.",how:'남이 보는 나를 묻는 문장은 좋은 평판인지 나쁜 평판인지로 번역해서 답하세요.'});
-  if(R.sharpCls!=='good'||R.strong<0.1)L.push({sev:2,title:'강점이 잘 안 보여요',data:`성향 최고-최저 차이 ${R.spread}점, 매우 그렇다 ${Math.round(R.strong*100)}%`,why:'다 무난한 사람은 기억에 남지 않고 직무 적합성도 흐려져요.',how:'실제 경험이 받쳐 주는 강점 문장은 매우 그렇다를 써도 괜찮아요.'});
+  if(R.traps.IND.hits.length)L.push({sev:2,title:'나쁜 평판을 담은 문장에 동의했어요',data:`${R.traps.IND.hits.length}개`,why:'남이 보는 내 모습을 묻는 문장 중 나쁜 평판을 담은 것에 그렇다로 답하면, 그 평판을 스스로 인정하는 셈이에요.',how:'남이 보는 나를 묻는 문장은 좋은 평판인지 나쁜 평판인지로 번역해서 답하세요.'});
+  if(R.sharpCls!=='good')L.push({sev:2,title:R.spread>=25?"'매우 그렇다'가 너무 적어요":'강점이 잘 안 보여요',data:`성향 최고-최저 차이 ${R.spread}점, 매우 그렇다 ${Math.round(R.strong*100)}%`,why:'다 무난한 사람은 기억에 남지 않고 직무 적합성도 흐려져요.',how:'실제 경험이 받쳐 주는 강점 문장은 매우 그렇다를 써도 괜찮아요.'});
   if(R.avgPer<4&&!S.p1Timeout)L.push({sev:2,title:'너무 빨리 풀었어요',data:`문항당 평균 ${R.avgPer.toFixed(1)}초, 4초 미만 페이지 ${R.fastPages}개`,why:'함정 문항은 빨리 읽을수록 걸리기 쉬워요.',how:'문항당 6초 정도로 읽고 절대 표현, 두 얼굴, 돌려 묻기 세 가지만 확인하세요.'});
   if(S.p1Timeout)L.push({sev:3,title:'시간이 부족했어요',data:`미응답 ${R.un1}문항`,why:'미응답은 그 자체로 불성실하게 읽힐 수 있어요.',how:'한 문항에 10초 넘게 머물지 마세요.'});
   if(R.negHon.length)L.push({sev:2,title:'약점 세트에서 정직 관련 약점을 골랐어요',data:`${R.negHon.length}번`,why:'세 약점 중 정직 관련 약점을 인정하면 다른 약점보다 무겁게 읽혀요.',how:'실제로 해당하는 다른 약점을 가장 가깝다로, 정직 약점은 가장 멀다로 고르세요.'});
   const lowAx=R.axes.filter(a=>a.k!=='HON'&&a.v<a.target-10).map(a=>a.n);
-  if(lowAx.length)L.push({sev:1,title:'기준선보다 낮은 축이 있어요',data:lowAx.join(', '),why:'CJ가 보고 싶은 모습 중 덜 드러난 부분이에요.',how:'그 성향을 보여 준 실제 경험을 떠올리고 답하세요. 없는 경험을 만들 필요는 없어요.'});
+  if(lowAx.length)L.push({sev:1,title:'기준선보다 10점 넘게 낮은 항목이 있어요',data:lowAx.join(', '),why:'CJ가 보고 싶은 모습 중 덜 드러난 부분이에요.',how:'그 성향을 보여 준 실제 경험을 떠올리고 답하세요. 없는 경험을 만들 필요는 없어요.'});
   if(R.traps.ABI.hits.length)L.push({sev:1,title:'능력 문장에 매우 그렇다를 줬어요',data:`${R.traps.ABI.hits.length}개`,why:'관계 구도나 상대 의도를 읽는 능력은 강하게 주장하면 정치적으로 읽힐 수 있어요.',how:'능력 문장은 그렇다까지가 안전해요.'});
   if(R.maxStreak>=7)L.push({sev:1,title:'같은 번호를 연속으로 눌렀어요',data:`최대 ${R.maxStreak}번 연속`,why:'문장을 읽지 않고 찍은 패턴으로 의심받을 수 있어요.',how:'같은 번호가 6번 넘게 이어지면 문장을 다시 읽어 보세요.'});
   if(R.mism.length)L.push({sev:1,title:'Part 1과 Part 2가 엇갈렸어요',data:R.mism.map(tn).join(', '),why:'두 파트가 다른 사람을 그리면 진짜 우선순위가 어디인지 흐려져요.',how:'나다운 성향 세 개를 정해 두고 Part 2에서 가장 멀다로 고르지 마세요.'});
@@ -918,30 +924,30 @@ function speedSVG(per){
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="페이지별 문항당 풀이 시간">${bars}<line class="tl" x1="${pad}" x2="${W-pad}" y1="${y(6).toFixed(1)}" y2="${y(6).toFixed(1)}"/><text class="ax" x="${pad}" y="12">문항당 초 (점선: 권장 6초)</text><text class="ax" x="${pad}" y="${H-4}">1페이지</text><text class="ax" x="${W-pad}" y="${H-4}" text-anchor="end">${per.length}페이지</text></svg>`;
 }
 const TYPE_WHY={
-  ABS:it=>"'전혀', '한 번도', '언제나' 같은 절대 표현이 붙어 사실상 아무도 해당하지 않는 문장이에요. 그렇다 이상이면 과장으로 읽혀요.",
-  HUM:it=>"누구나 한 번쯤 겪는 일이에요. 아니라고 하면 약점을 감추는 사람으로 읽혀서 오히려 신뢰가 떨어져요.",
-  MAL:it=>"피해의식, 충동, 공격성, 지나친 불안을 거르는 문장이에요. 그날 기분이 아니라 평소 모습으로 답하세요.",
-  TWO:it=>it.good?`${it.good}으로 보면 장점, ${it.bad}으로 보면 단점인 문장이에요. 어느 쪽으로 채점될지 모르니 극단은 피해요.`:"한쪽으로는 장점, 다른 쪽으로는 단점인 문장이라 극단은 피해요.",
-  IND:it=>"따뜻하게 들리지만 주변이 나를 못 믿는다는 뜻, 즉 나쁜 평판을 담은 문장이에요.",
-  ABI:it=>"능력을 묻는 문장이지만 매우 그렇다는 사람을 이용하는 정치적인 성향으로 읽힐 수 있어요."
+  ABS:(it,v,lo,hi)=>"예외를 인정하지 않는 절대 표현이라 사실상 아무도 해당하지 않는 문장이에요. 그렇다 이상이면 과장으로 읽혀요.",
+  HUM:(it,v,lo,hi)=>"누구나 한 번쯤 겪는 일이에요. 아니라고 하면 약점을 감추는 사람으로 읽혀서 오히려 신뢰가 떨어져요.",
+  MAL:(it,v,lo,hi)=>"피해의식, 충동, 공격성, 지나친 불안을 거르는 문장이에요. 그렇다 이상이 여러 개면 조직 적응에 대한 걱정으로 읽혀요. 그날 기분이 아니라 평소 모습으로 답하세요.",
+  TWO:(it,v,lo,hi)=>v>hi?`그렇다 쪽으로 강하게 답하면 '${it.bad||'단점'}' 쪽으로 읽힐 수 있어요.`:`아니다 쪽으로 강하게 답하면 '${it.good||'장점'}'이 부족한 사람으로 읽힐 수 있어요.`,
+  IND:(it,v,lo,hi)=>`남이 보는 내 모습을 묻는 문장인데, 내용은 '${TR[it.t]?TR[it.t][0]:'좋은 평판'}' 쪽이 부족하다는 나쁜 평판이에요. 그렇다로 답하면 그 평판을 인정하는 셈이에요.`,
+  ABI:(it,v,lo,hi)=>hi===3?"사람을 이용하는 뉘앙스가 있는 문장이라 그렇다 이상이면 계산적인 사람으로 읽힐 수 있어요.":"능력을 묻는 문장이지만 매우 그렇다는 사람을 이용하는 정치적인 성향으로 읽힐 수 있어요."
 };
 function rangeLabel(lo,hi){return lo===hi?SCALE[lo-1]:`${SCALE[lo-1]}~${SCALE[hi-1]}`;}
 function hitBlock(k,it,isAmb){
   const v=S.a1[it.id];const [lo,hi]=it.safe||TYPES[k].safe;
-  const why=k==='VAL'?(it.why||"그럴듯하게 들리지만 CJ 가치와 부딪히는 생각이에요."):TYPE_WHY[k](it);
+  const why=k==='VAL'?(it.why||"그럴듯하게 들리지만 CJ 가치와 부딪히는 생각이에요."):TYPE_WHY[k](it,v,lo,hi);
   return `<div class="hit2${isAmb?' amb':''}"><p class="hs">${plain(it.s)}${it.tag?`<span class="vtag">${it.tag}</span>`:''}</p>
     <p class="ha"><span class="mine">내 답 ${SCALE[v-1]}</span><span class="arrow">→</span><span class="rec">권장 ${rangeLabel(lo,hi)}</span></p>
-    <p class="hw">${isAmb?'보통이다는 거부하지 않았다는 신호로 읽혀요. ':''}${why}</p></div>`;
+    <p class="hw">${isAmb?'보통이다는 이 생각을 거부하지 않았다는 신호로 읽혀요. ':''}${why}</p></div>`;
 }
 function trapCard(k,R){
   const T=TYPES[k],g=R.traps[k];const [lo,hi]=T.safe;
   const hitN=g.hits.length;const cls=g.n===0?'c-none':hitN===0?'c-good':hitN<=2?'c-mid':'c-bad';
-  const AMB=['VAL','IND','MAL'].includes(k);
+  const AMB=k==='VAL';
   const cells=[1,2,3,4,5].map(v=>`<span class="${v>=lo&&v<=hi?'safe':(AMB&&v===3?'amb':'')}">${v}</span>`).join('');
-  const counts=g.counts.map((c,i)=>{const v=i+1;const bad=!(v>=lo&&v<=hi)&&!(AMB&&v===3);return `<span class="${bad&&c?'hitc':''}">${c}</span>`;}).join('');
+  const hitVals=new Set(g.hits.map(it=>S.a1[it.id]));const counts=g.counts.map((c,i)=>`<span class="${hitVals.has(i+1)?'hitc':''}">${c}</span>`).join('');
   const list=g.hits.map(it=>hitBlock(k,it,false)).join('');
   const amb=g.amb.map(it=>hitBlock(k,it,true)).join('');
-  const custom=k==='ABI'?'<p class="tex">사람을 이용하는 뉘앙스가 강한 문장은 1~3이 안전해요.</p>':'';
+  const custom=k==='ABI'?'<p class="tex">아니다 쪽은 괜찮아요. 사람을 이용하는 뉘앙스가 강한 문장은 그렇다부터 조심하세요.</p>':k==='TWO'?'<p class="tex">위 초록 칸은 장단점이 비슷한 문장 기준이에요.</p>':'';
   return `<div class="tcard"><h3>${T.n}<span class="chip ${cls}">${g.n?`${hitN} / ${g.n}개 걸림`:'출제 없음'}</span></h3>
     <p class="tq"><b>이렇게 구별해요</b>${T.q}</p>
     <div class="scale5">${cells}</div><div class="counts5">${counts}</div>
@@ -1021,7 +1027,7 @@ function result(){
       <div class="prow"><span class="ptag">문장 A</span><p class="ptext">${marked(A.s)}</p>${scale5(vA,null)}</div>
       <div class="rel ${opp?'opp':'same'}">${opp?'⇅ 두 문장은 서로 반대되는 내용이에요. A와 반대로 답해야 일관돼요.':'= 두 문장은 같은 뜻이에요. A와 비슷하게 답해야 일관돼요.'}</div>
       <div class="prow"><span class="ptag">문장 B</span><p class="ptext">${marked(B.s)}</p>${scale5(vB,zone)}</div>
-      <p class="pexp">A에 <b>${SCALE[vA-1]}</b>로 답했다면, ${opp?'반대 내용인':'같은 뜻인'} B에는 <b class="okc">${SCALE[exp-1]}</b> 근처(초록 칸)로 답해야 같은 사람으로 읽혀요. 이번엔 <b class="badc">${SCALE[vB-1]}</b>로 답해서 ${x.d}칸 어긋났어요.</p></div>`;}).join('');
+      <p class="pexp">A에 <b>${SCALE[vA-1]}</b>로 답했다면, ${opp?'반대 내용인':'같은 뜻인'} B에는 <b class="okc">${SCALE[exp-1]}</b> 근처(초록 칸)로 답해야 같은 사람으로 읽혀요. 이번엔 <b class="badc">${SCALE[vB-1]}</b>로 답해서 ${x.d}칸 어긋났어요.</p><p class="pexp cj">A와 B 중 어느 쪽을 고쳐도 일관성은 맞춰져요. 다만 CJ가 보고 싶은 모습은 ${opp?`A에는 <b class="okc">그렇다</b>, B에는 <b class="okc">아니다</b>`:`A와 B 모두 <b class="okc">그렇다</b>`} 쪽이에요. 실제 내 모습도 그쪽이라면 그렇게 맞추세요.</p></div>`;}).join('');
   const p2rows=Object.keys(TR).filter(t=>R.app[t]).sort((a,b)=>R.net[b]-R.net[a]).map(t=>{const n=R.net[t];const w=Math.min(Math.abs(n)/6,1)*50;return `<div class="div-row"><span>${TR[t][0]}</span><span class="div-bar"><i class="${n>=0?'pos':'neg'}" style="width:${w}%"></i></span><span class="div-n">${n>0?'+'+n:n<0?'−'+Math.abs(n):'0'}</span></div>`;}).join('');
   const tp=R.trapPick.length?`<p style="margin-top:14px">좋은 말 사이에 숨은 함정을 '가장 가깝다'로 고른 세트: <b>${R.trapPick.map(i=>plain(i.s)).join(' / ')}</b></p>`:(S.p2.some(s=>s.type==='trap')?`<p class="clean" style="margin-top:14px">좋은 말 사이에 숨은 함정을 한 번도 고르지 않았어요.</p>`:'');
   const colors=['#C8413B','#E0874A','#9AA3B5','#5E86C4','#233056'];
